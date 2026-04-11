@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'certirehber-profile';
+const LANGUAGE_KEY = 'certirehber-language';
 
 const elements = {
   sector: document.getElementById('sector'),
@@ -20,12 +21,38 @@ const elements = {
   savedStatus: document.getElementById('saved-status'),
   footerDisclaimer: document.getElementById('footer-disclaimer'),
   footerMeta: document.getElementById('footer-meta'),
-  contactForm: document.getElementById('contact-form')
+  contactForm: document.getElementById('contact-form'),
+  languageSwitcher: document.getElementById('language-switcher'),
+  mobileLanguageSwitcher: document.getElementById('language-switcher-mobile'),
+  metaDescription: document.querySelector('meta[name="description"]')
 };
 
-let state = {
-  data: null
+const state = {
+  baseData: null,
+  locale: 'tr'
 };
+
+function getSupportedLocales() {
+  return window.APP_I18N?.locales || [];
+}
+
+function getCurrentUi() {
+  return window.APP_I18N?.ui?.[state.locale] || window.APP_I18N?.ui?.tr || {};
+}
+
+function getCurrentDataOverlay() {
+  return window.APP_I18N?.data?.[state.locale] || {};
+}
+
+function t(key, replacements = {}) {
+  const value = key.split('.').reduce((accumulator, part) => accumulator?.[part], getCurrentUi());
+  const fallback = key.split('.').reduce((accumulator, part) => accumulator?.[part], window.APP_I18N?.ui?.tr || {});
+  const template = value ?? fallback ?? key;
+
+  return Object.entries(replacements).reduce((text, [name, replacement]) => {
+    return text.replaceAll(`{${name}}`, replacement);
+  }, template);
+}
 
 function createOption(value, label) {
   const option = document.createElement('option');
@@ -49,8 +76,8 @@ function obligationClasses(obligation) {
     : 'bg-emerald-50 text-emerald-700 border border-emerald-100';
 }
 
-function regionBadge(region) {
-  return `<span class="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-brand-700">${region}</span>`;
+function getObligationLabel(obligation) {
+  return obligation === 'zorunlu' ? t('common.required') : t('common.recommended');
 }
 
 function normalizeEmployees(rangeValue) {
@@ -103,7 +130,7 @@ function getProfile() {
 
 function saveProfile(profile) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
-  elements.savedStatus.textContent = 'Yerel kayıt güncellendi';
+  setSavedStatus('updated');
 }
 
 function readProfile() {
@@ -113,6 +140,162 @@ function readProfile() {
   } catch (error) {
     return null;
   }
+}
+
+function setSavedStatus(mode) {
+  const keyMap = {
+    waiting: 'status.waiting',
+    updated: 'status.updated',
+    loaded: 'status.loaded',
+    cleared: 'status.cleared',
+    error: 'status.error'
+  };
+  elements.savedStatus.textContent = t(keyMap[mode] || keyMap.waiting);
+}
+
+function resolveInitialLocale() {
+  const savedLocale = localStorage.getItem(LANGUAGE_KEY);
+  if (savedLocale && getSupportedLocales().some((item) => item.code === savedLocale)) {
+    return savedLocale;
+  }
+
+  const browserLanguage = (navigator.language || 'tr').toLowerCase();
+  const match = getSupportedLocales().find((item) => browserLanguage.startsWith(item.code));
+  return match?.code || 'tr';
+}
+
+function saveLocale(locale) {
+  localStorage.setItem(LANGUAGE_KEY, locale);
+}
+
+function renderLanguageSwitchers() {
+  const locales = getSupportedLocales();
+  [elements.languageSwitcher, elements.mobileLanguageSwitcher].forEach((select) => {
+    if (!select) {
+      return;
+    }
+
+    select.innerHTML = '';
+    locales.forEach((locale) => {
+      const option = createOption(locale.code, locale.nativeName);
+      option.textContent = `${locale.nativeName} (${locale.label})`;
+      select.appendChild(option);
+    });
+    select.value = state.locale;
+    select.setAttribute('aria-label', t('language.label'));
+  });
+}
+
+function applyStaticTranslations() {
+  document.documentElement.lang = state.locale;
+  document.title = t('meta.title');
+  elements.metaDescription.setAttribute('content', t('meta.description'));
+
+  document.querySelectorAll('[data-i18n]').forEach((node) => {
+    node.textContent = t(node.dataset.i18n);
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((node) => {
+    node.setAttribute('placeholder', t(node.dataset.i18nPlaceholder));
+  });
+}
+
+function getLocalizedMeta() {
+  const overlay = getCurrentDataOverlay().meta || {};
+  return {
+    ...state.baseData.meta,
+    ...overlay
+  };
+}
+
+function getLocalizedStats() {
+  const labels = getCurrentDataOverlay().stats || [];
+  return state.baseData.stats.map((item, index) => ({
+    ...item,
+    label: labels[index] || item.label
+  }));
+}
+
+function getLocalizedFilters() {
+  const filters = getCurrentDataOverlay().filters || {};
+  const sectors = state.baseData.filters.sectors.map((value) => ({
+    value,
+    label: filters.sectors?.[value] || value
+  }));
+  const employeeRanges = state.baseData.filters.employeeRanges.map((item) => ({
+    ...item,
+    label: filters.employeeRanges?.[item.value] || item.label
+  }));
+  const businessStages = state.baseData.filters.businessStages.map((item) => ({
+    ...item,
+    label: filters.businessStages?.[item.value] || item.label
+  }));
+  const regions = state.baseData.filters.regions.map((item) => ({
+    ...item,
+    label: filters.regions?.[item.value] || item.label
+  }));
+
+  return { sectors, employeeRanges, businessStages, regions };
+}
+
+function getLocalizedJourney() {
+  const overlay = getCurrentDataOverlay().journey || [];
+  return state.baseData.journey.map((item, index) => ({
+    ...item,
+    ...(overlay[index] || {})
+  }));
+}
+
+function getLocalizedCertificate(certificate) {
+  const overlay = getCurrentDataOverlay().certificates?.[certificate.id] || {};
+  return {
+    ...certificate,
+    ...overlay
+  };
+}
+
+function getLocalizedCertificates() {
+  return state.baseData.certificates.map(getLocalizedCertificate);
+}
+
+function getLocalizedPlaybooks() {
+  const playbooks = getCurrentDataOverlay().playbooks || {};
+  return state.baseData.playbooks.map((item) => ({
+    ...item,
+    ...(playbooks[item.sector] || {})
+  }));
+}
+
+function getLocalizedResources() {
+  const overlay = getCurrentDataOverlay().resources || [];
+  return state.baseData.resources.map((item, index) => ({
+    ...item,
+    ...(overlay[index] || {})
+  }));
+}
+
+function getLocalizedFaq() {
+  const overlay = getCurrentDataOverlay().faq || [];
+  return state.baseData.faq.map((item, index) => ({
+    ...item,
+    ...(overlay[index] || {})
+  }));
+}
+
+function getSectorLabel(value) {
+  return getLocalizedFilters().sectors.find((item) => item.value === value)?.label || value;
+}
+
+function getStageLabel(value) {
+  return getLocalizedFilters().businessStages.find((item) => item.value === value)?.label || value;
+}
+
+function getRegionLabel(value) {
+  return getLocalizedFilters().regions.find((item) => item.value === value)?.label || value;
+}
+
+function regionBadge(regionValue) {
+  return `<span class="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-brand-700">${getRegionLabel(regionValue)}</span>`;
 }
 
 function populateSelect(selectElement, placeholder, items) {
@@ -127,6 +310,13 @@ function populateSelect(selectElement, placeholder, items) {
   });
 }
 
+function renderPersonalDataOptions() {
+  elements.personalData.innerHTML = '';
+  elements.personalData.appendChild(createOption('', t('select.personalData')));
+  elements.personalData.appendChild(createOption('true', t('common.yes')));
+  elements.personalData.appendChild(createOption('false', t('common.no')));
+}
+
 function renderRegions(regions) {
   elements.regionsContainer.innerHTML = '';
   regions.forEach((region) => {
@@ -136,7 +326,7 @@ function renderRegions(regions) {
       <input type="checkbox" value="${region.value}" class="mt-1 h-4 w-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500">
       <span>
         <span class="block font-semibold text-slate-900">${region.label}</span>
-        <span class="mt-1 block text-xs leading-5 text-slate-500">${region.value === 'Global' ? 'Global standartlar ve bölgesel gereksinimleri birlikte düşünmek için kullanın.' : 'Bu pazara açılımda geçerli olan veya öne çıkan gereksinimler filtrelenir.'}</span>
+        <span class="mt-1 block text-xs leading-5 text-slate-500">${region.value === 'Global' ? t('regions.globalHint') : t('regions.marketHint')}</span>
       </span>
     `;
     elements.regionsContainer.appendChild(wrapper);
@@ -163,28 +353,31 @@ function renderJourney(journey) {
 }
 
 function renderCertificates(certificates) {
-  elements.certificateGrid.innerHTML = certificates.map((certificate) => `
-    <article class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm">
-      <div class="flex flex-wrap items-center gap-2">
-        <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">${certificate.category}</span>
-        <span class="rounded-full px-3 py-1 text-xs font-semibold ${obligationClasses(certificate.obligation)}">${certificate.obligation === 'zorunlu' ? 'Zorunlu' : 'Tavsiye Edilen'}</span>
-      </div>
-      <h3 class="mt-4 text-xl font-black tracking-tight text-slate-950">${certificate.name}</h3>
-      <p class="mt-3 text-sm leading-6 text-slate-600">${certificate.summary}</p>
-      <div class="mt-4 flex flex-wrap gap-2">${certificate.regions.map(regionBadge).join('')}</div>
-      <div class="mt-5 grid gap-3 text-sm text-slate-600">
-        <div><span class="font-semibold text-slate-900">Süre:</span> ${certificate.estimatedTimeline}</div>
-        <div><span class="font-semibold text-slate-900">Maliyet:</span> ${certificate.estimatedCost}</div>
-        <div><span class="font-semibold text-slate-900">Kaynak:</span> ${certificate.issuingAuthority}</div>
-      </div>
-    </article>
-  `).join('');
+  elements.certificateGrid.innerHTML = certificates.map((rawCertificate) => {
+    const certificate = getLocalizedCertificate(rawCertificate);
+    return `
+      <article class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">${certificate.category}</span>
+          <span class="rounded-full px-3 py-1 text-xs font-semibold ${obligationClasses(certificate.obligation)}">${getObligationLabel(certificate.obligation)}</span>
+        </div>
+        <h3 class="mt-4 text-xl font-black tracking-tight text-slate-950">${certificate.name}</h3>
+        <p class="mt-3 text-sm leading-6 text-slate-600">${certificate.summary}</p>
+        <div class="mt-4 flex flex-wrap gap-2">${certificate.regions.map(regionBadge).join('')}</div>
+        <div class="mt-5 grid gap-3 text-sm text-slate-600">
+          <div><span class="font-semibold text-slate-900">${t('common.duration')}:</span> ${certificate.estimatedTimeline}</div>
+          <div><span class="font-semibold text-slate-900">${t('common.cost')}:</span> ${certificate.estimatedCost}</div>
+          <div><span class="font-semibold text-slate-900">${t('common.authority')}:</span> ${certificate.issuingAuthority}</div>
+        </div>
+      </article>
+    `;
+  }).join('');
 }
 
 function renderPlaybooks(playbooks) {
   elements.playbookGrid.innerHTML = playbooks.map((item) => `
     <article class="rounded-[1.75rem] border border-white/10 bg-white/5 p-6">
-      <div class="text-sm font-semibold uppercase tracking-[0.24em] text-sky-300">${item.sector}</div>
+      <div class="text-sm font-semibold uppercase tracking-[0.24em] text-sky-300">${getSectorLabel(item.sector)}</div>
       <h3 class="mt-3 text-2xl font-black tracking-tight">${item.headline}</h3>
       <p class="mt-3 text-sm leading-6 text-slate-300">${item.summary}</p>
       <div class="mt-5 flex flex-wrap gap-2">
@@ -242,41 +435,46 @@ function buildResultCard(title, description, certificates, emptyMessage) {
       <div class="text-lg font-bold text-slate-900">${title}</div>
       <p class="mt-2 text-sm leading-6 text-slate-600">${description}</p>
       <div class="mt-5 space-y-4">
-        ${certificates.map((certificate) => `
-          <div class="rounded-2xl border border-slate-200 p-4">
-            <div class="flex flex-wrap items-center gap-2">
-              <div class="text-base font-bold text-slate-950">${certificate.name}</div>
-              <span class="rounded-full px-3 py-1 text-xs font-semibold ${obligationClasses(certificate.obligation)}">${certificate.obligation === 'zorunlu' ? 'Zorunlu' : 'Tavsiye Edilen'}</span>
+        ${certificates.map((rawCertificate) => {
+          const certificate = getLocalizedCertificate(rawCertificate);
+          return `
+            <div class="rounded-2xl border border-slate-200 p-4">
+              <div class="flex flex-wrap items-center gap-2">
+                <div class="text-base font-bold text-slate-950">${certificate.name}</div>
+                <span class="rounded-full px-3 py-1 text-xs font-semibold ${obligationClasses(certificate.obligation)}">${getObligationLabel(certificate.obligation)}</span>
+              </div>
+              <p class="mt-2 text-sm leading-6 text-slate-600">${certificate.summary}</p>
+              <div class="mt-3 flex flex-wrap gap-2">${certificate.regions.map(regionBadge).join('')}</div>
+              <div class="mt-3 text-xs leading-5 text-slate-500">${certificate.officialHint}</div>
             </div>
-            <p class="mt-2 text-sm leading-6 text-slate-600">${certificate.summary}</p>
-            <div class="mt-3 flex flex-wrap gap-2">${certificate.regions.map(regionBadge).join('')}</div>
-            <div class="mt-3 text-xs leading-5 text-slate-500">${certificate.officialHint}</div>
-          </div>
-        `).join('')}
+          `;
+        }).join('')}
       </div>
     </article>
   `;
 }
 
 function renderNextActions(profile, mandatoryCertificates, recommendedCertificates) {
+  const totalCertificates = mandatoryCertificates.length + recommendedCertificates.length;
+  const firstMandatory = mandatoryCertificates[0] ? getLocalizedCertificate(mandatoryCertificates[0]).name : '';
   const actions = [
     {
-      title: '1. Önceliklendirme yapın',
+      title: t('actions.first.title'),
       description: mandatoryCertificates.length
-        ? `Önce ${mandatoryCertificates[0].name} gibi zorunlu başlıklardan başlayın ve mevzuat yükümlülüklerini kapatın.`
-        : 'Zorunlu başlık görünmüyorsa tavsiye edilen belgeleri müşteri ve büyüme hedeflerinize göre önceliklendirin.'
+        ? t('actions.first.withMandatory', { certificate: firstMandatory })
+        : t('actions.first.withoutMandatory')
     },
     {
-      title: '2. Hazırlık paketinizi oluşturun',
+      title: t('actions.second.title'),
       description: profile.personalData === 'true'
-        ? 'Veri envanteri, politika seti, açık rıza metinleri ve sözleşme ekleri gibi temel dokümanları planlayın.'
-        : 'Süreç dokümantasyonu, görev tanımları, risk analizi ve iç denetim hazırlığını erken aşamada kurun.'
+        ? t('actions.second.personalData')
+        : t('actions.second.noPersonalData')
     },
     {
-      title: '3. Destek modelinizi seçin',
-      description: recommendedCertificates.length + mandatoryCertificates.length > 2
-        ? 'Birden fazla pazara açılıyorsanız danışmanlık ve belgelendirme kuruluşu eşleştirmesi zaman kazandırır.'
-        : 'İlk belge süreciniz sınırlıysa iç kaynak + dış denetim modeliyle de ilerleyebilirsiniz.'
+      title: t('actions.third.title'),
+      description: totalCertificates > 2
+        ? t('actions.third.complex')
+        : t('actions.third.simple')
     }
   ];
 
@@ -289,7 +487,7 @@ function renderNextActions(profile, mandatoryCertificates, recommendedCertificat
 }
 
 function filterCertificates(profile) {
-  return state.data.certificates.filter((certificate) => {
+  return state.baseData.certificates.filter((certificate) => {
     const sectorMatch = profile.sector ? certificate.sectors.includes(profile.sector) : true;
     const stageMatch = profile.stage ? certificate.businessStages.includes(profile.stage) : true;
     const employeesMatch = profile.employees ? matchesEmployeeRequirement(certificate.employeeRequirement, profile.employees) : true;
@@ -310,8 +508,8 @@ function filterCertificates(profile) {
 function renderResults(profile) {
   if (!profile.sector || !profile.employees || !profile.stage || !profile.personalData || !profile.regions.length) {
     elements.summaryGrid.innerHTML = createEmptyState(
-      'Değerlendirme için tüm alanları doldurun',
-      'Sektör, çalışan sayısı, şirket aşaması, kişisel veri işleme durumu ve en az bir hedef pazar seçildiğinde sonuçlar oluşturulur.'
+      t('empty.assessmentTitle'),
+      t('empty.assessmentDescription')
     );
     elements.resultContent.innerHTML = '';
     elements.nextActions.innerHTML = '';
@@ -322,99 +520,117 @@ function renderResults(profile) {
   const mandatoryCertificates = filteredCertificates.filter((item) => item.obligation === 'zorunlu');
   const recommendedCertificates = filteredCertificates.filter((item) => item.obligation !== 'zorunlu');
 
-  const personalDataLabel = profile.personalData === 'true' ? 'Evet, işliyoruz' : 'Hayır, işlemiyoruz';
-  const selectedRegionLabels = state.data.filters.regions
-    .filter((region) => profile.regions.includes(region.value))
-    .map((region) => region.label)
-    .join(', ');
+  const personalDataLabel = profile.personalData === 'true' ? t('summary.personalDataYes') : t('summary.personalDataNo');
+  const selectedRegionLabels = profile.regions.map(getRegionLabel).join(', ');
+  const sectorLabel = getSectorLabel(profile.sector);
+  const stageLabel = getStageLabel(profile.stage);
+  const employeeLabel = getLocalizedFilters().employeeRanges.find((item) => item.value === profile.employees)?.label || profile.employees;
 
   elements.summaryGrid.innerHTML = [
-    createSummaryCard('Şirket Profili', profile.sector, `${profile.employees} çalışan aralığı, ${state.data.filters.businessStages.find((item) => item.value === profile.stage)?.label || ''}`),
-    createSummaryCard('Veri İşleme Durumu', personalDataLabel, 'Veri koruma gereksinimleri buna göre şekillenir.'),
-    createSummaryCard('Hedef Pazarlar', selectedRegionLabels, 'Global seçim yapıldıysa global standartlar ve bölgesel gereksinimler birlikte değerlendirilir.')
+    createSummaryCard(t('summary.companyProfile'), sectorLabel, `${employeeLabel}, ${stageLabel}`),
+    createSummaryCard(t('summary.dataProcessing'), personalDataLabel, t('summary.dataProcessingDetail')),
+    createSummaryCard(t('summary.targetMarkets'), selectedRegionLabels, t('summary.targetMarketsDetail'))
   ].join('');
 
   elements.resultContent.innerHTML = [
     buildResultCard(
-      'Alınması zorunlu belgeler',
-      'Mevzuat, ürün uygunluğu veya hedef pazardaki regülasyon sebebiyle öne çıkan başlıklar',
+      t('results.mandatoryTitle'),
+      t('results.mandatoryDescription'),
       mandatoryCertificates,
-      'Seçtiğiniz profil için doğrudan zorunlu bir başlık görünmüyor. Yine de resmi kaynak doğrulaması önerilir.'
+      t('results.mandatoryEmpty')
     ),
     buildResultCard(
-      'Tavsiye edilen belgeler',
-      'Kurumsallaşma, müşteri güveni, ihracat ve büyüme hedefleri açısından güçlü değer üreten başlıklar',
+      t('results.recommendedTitle'),
+      t('results.recommendedDescription'),
       recommendedCertificates,
-      'Bu profil için tavsiye alanı boş görünüyor. Daha geniş sektör veya pazar kombinasyonlarıyla tekrar deneyebilirsiniz.'
+      t('results.recommendedEmpty')
     )
   ].join('');
 
   renderNextActions(profile, mandatoryCertificates, recommendedCertificates);
 }
 
-function applySavedProfile(profile) {
-  if (!profile) {
-    elements.savedStatus.textContent = 'Yerel kayıt bekleniyor';
-    renderResults(getProfile());
-    return;
-  }
-
-  elements.sector.value = profile.sector || '';
-  elements.employees.value = profile.employees || '';
-  elements.stage.value = profile.stage || '';
-  elements.personalData.value = profile.personalData || '';
+function restoreProfile(profile) {
+  elements.sector.value = profile?.sector || '';
+  elements.employees.value = profile?.employees || '';
+  elements.stage.value = profile?.stage || '';
+  elements.personalData.value = profile?.personalData || '';
 
   const regionInputs = elements.regionsContainer.querySelectorAll('input[type="checkbox"]');
   regionInputs.forEach((input) => {
-    input.checked = Array.isArray(profile.regions) ? profile.regions.includes(input.value) : false;
+    input.checked = Array.isArray(profile?.regions) ? profile.regions.includes(input.value) : false;
   });
-
-  elements.savedStatus.textContent = 'Yerel kayıt yüklendi';
-  renderResults(getProfile());
 }
 
 function resetForm() {
-  elements.sector.value = '';
-  elements.employees.value = '';
-  elements.stage.value = '';
-  elements.personalData.value = '';
-  elements.regionsContainer.querySelectorAll('input[type="checkbox"]').forEach((input) => {
-    input.checked = false;
-  });
+  restoreProfile({ sector: '', employees: '', stage: '', personalData: '', regions: [] });
   localStorage.removeItem(STORAGE_KEY);
-  elements.savedStatus.textContent = 'Yerel kayıt temizlendi';
+  setSavedStatus('cleared');
   renderResults(getProfile());
 }
 
 function handleContactSubmit(event) {
   event.preventDefault();
-  const name = document.getElementById('contact-name').value || 'Ziyaretçi';
-  alert(`${name}, talebiniz demo modunda alındı. Gerçek sürümde bu form CRM veya teklif sistemine bağlanacaktır.`);
+  const name = document.getElementById('contact-name').value || t('contact.demoVisitor');
+  alert(t('contact.alert', { name }));
   elements.contactForm.reset();
+}
+
+function renderApp(profile) {
+  const localizedFilters = getLocalizedFilters();
+  const localizedMeta = getLocalizedMeta();
+
+  applyStaticTranslations();
+  renderLanguageSwitchers();
+
+  elements.footerDisclaimer.textContent = localizedMeta.disclaimer;
+  elements.footerMeta.textContent = t('footer.meta', {
+    date: localizedMeta.lastGlobalUpdate,
+    email: localizedMeta.supportEmail
+  });
+
+  populateSelect(elements.sector, t('select.sector'), localizedFilters.sectors);
+  populateSelect(elements.employees, t('select.employees'), localizedFilters.employeeRanges);
+  populateSelect(elements.stage, t('select.stage'), localizedFilters.businessStages);
+  renderPersonalDataOptions();
+  renderRegions(localizedFilters.regions);
+  renderStats(getLocalizedStats());
+  renderJourney(getLocalizedJourney());
+  renderCertificates(getLocalizedCertificates());
+  renderPlaybooks(getLocalizedPlaybooks());
+  renderResources(getLocalizedResources());
+  renderFaq(getLocalizedFaq());
+  restoreProfile(profile);
+  renderResults(getProfile());
+}
+
+function handleLanguageChange(locale) {
+  state.locale = locale;
+  saveLocale(locale);
+  const currentProfile = getProfile();
+  renderApp(currentProfile);
+  setSavedStatus(readProfile() ? 'loaded' : 'waiting');
 }
 
 async function init() {
   try {
+    state.locale = resolveInitialLocale();
+
     const response = await fetch('./data.json');
-    state.data = await response.json();
+    state.baseData = await response.json();
 
-    document.title = `${state.data.meta.platform} | Hedef Pazar Bazlı Sertifika Rehberi`;
-    elements.footerDisclaimer.textContent = state.data.meta.disclaimer;
-    elements.footerMeta.textContent = `Son güncelleme ${state.data.meta.lastGlobalUpdate} · ${state.data.meta.supportEmail}`;
-
-    populateSelect(elements.sector, 'Sektör seçin', state.data.filters.sectors);
-    populateSelect(elements.employees, 'Çalışan sayısını seçin', state.data.filters.employeeRanges);
-    populateSelect(elements.stage, 'Firma aşamasını seçin', state.data.filters.businessStages);
-    renderRegions(state.data.filters.regions);
-    renderStats(state.data.stats);
-    renderJourney(state.data.journey);
-    renderCertificates(state.data.certificates);
-    renderPlaybooks(state.data.playbooks);
-    renderResources(state.data.resources);
-    renderFaq(state.data.faq);
+    renderLanguageSwitchers();
 
     const savedProfile = readProfile();
-    applySavedProfile(savedProfile);
+    renderApp(savedProfile);
+    setSavedStatus(savedProfile ? 'loaded' : 'waiting');
+
+    const onLanguageSwitch = (event) => {
+      handleLanguageChange(event.target.value);
+    };
+
+    elements.languageSwitcher?.addEventListener('change', onLanguageSwitch);
+    elements.mobileLanguageSwitcher?.addEventListener('change', onLanguageSwitch);
 
     elements.findButton.addEventListener('click', () => {
       const profile = getProfile();
@@ -425,11 +641,12 @@ async function init() {
     elements.resetButton.addEventListener('click', resetForm);
     elements.contactForm.addEventListener('submit', handleContactSubmit);
   } catch (error) {
+    applyStaticTranslations();
     elements.summaryGrid.innerHTML = createEmptyState(
-      'Veri yüklenemedi',
-      'data.json dosyası okunamadı. Dosya yolunu ve JSON yapısını kontrol edin.'
+      t('empty.dataTitle'),
+      t('empty.dataDescription')
     );
-    elements.savedStatus.textContent = 'Veri yükleme hatası';
+    setSavedStatus('error');
   }
 }
 
