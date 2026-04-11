@@ -170,19 +170,24 @@ function saveLocale(locale) {
 
 function renderLanguageSwitchers() {
   const locales = getSupportedLocales();
-  [elements.languageSwitcher, elements.mobileLanguageSwitcher].forEach((select) => {
-    if (!select) {
+  [elements.languageSwitcher, elements.mobileLanguageSwitcher].forEach((container) => {
+    if (!container) {
       return;
     }
 
-    select.innerHTML = '';
+    container.innerHTML = '';
     locales.forEach((locale) => {
-      const option = createOption(locale.code, locale.nativeName);
-      option.textContent = `${locale.nativeName} (${locale.label})`;
-      select.appendChild(option);
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.locale = locale.code;
+      button.className = locale.code === state.locale
+        ? 'rounded-full bg-brand-700 px-3 py-1.5 text-xs font-semibold text-white transition'
+        : 'rounded-full px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-sky-50 hover:text-brand-700';
+      button.textContent = locale.label;
+      button.setAttribute('aria-pressed', String(locale.code === state.locale));
+      button.setAttribute('aria-label', `${t('language.label')}: ${locale.nativeName}`);
+      container.appendChild(button);
     });
-    select.value = state.locale;
-    select.setAttribute('aria-label', t('language.label'));
   });
 }
 
@@ -626,11 +631,15 @@ async function init() {
     setSavedStatus(savedProfile ? 'loaded' : 'waiting');
 
     const onLanguageSwitch = (event) => {
-      handleLanguageChange(event.target.value);
+      const locale = event.target.closest('[data-locale]')?.dataset.locale;
+      if (!locale) {
+        return;
+      }
+      handleLanguageChange(locale);
     };
 
-    elements.languageSwitcher?.addEventListener('change', onLanguageSwitch);
-    elements.mobileLanguageSwitcher?.addEventListener('change', onLanguageSwitch);
+    elements.languageSwitcher?.addEventListener('click', onLanguageSwitch);
+    elements.mobileLanguageSwitcher?.addEventListener('click', onLanguageSwitch);
 
     elements.findButton.addEventListener('click', () => {
       const profile = getProfile();
