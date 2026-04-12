@@ -36,7 +36,8 @@ const elements = {
 
 const state = {
   data: null,
-  locale: 'tr'
+  locale: 'en',
+  activeSection: ''
 };
 
 function getSupportedLocales() {
@@ -109,9 +110,7 @@ function resolveInitialLocale() {
   if (savedLocale && getSupportedLocales().some((item) => item.code === savedLocale)) {
     return savedLocale;
   }
-  const browserLanguage = (navigator.language || 'tr').toLowerCase();
-  const match = getSupportedLocales().find((item) => browserLanguage.startsWith(item.code));
-  return match?.code || 'tr';
+  return 'en';
 }
 
 function saveLocale(locale) {
@@ -549,6 +548,7 @@ function renderApp(profile) {
   });
 
   renderResults(getProfile());
+  renderSectionVisibility(state.activeSection);
 }
 
 function handleLanguageChange(locale) {
@@ -557,6 +557,55 @@ function handleLanguageChange(locale) {
   const currentProfile = getProfile();
   renderApp(currentProfile);
   setSavedStatus(readProfile() ? 'loaded' : 'waiting');
+}
+
+function getSectionPanels() {
+  return Array.from(document.querySelectorAll('[data-section-panel]'));
+}
+
+function getSectionLinks() {
+  return Array.from(document.querySelectorAll('[data-section-link]'));
+}
+
+function renderSectionVisibility(sectionId) {
+  getSectionPanels().forEach((panel) => {
+    panel.classList.toggle('hidden', panel.dataset.sectionPanel !== sectionId);
+  });
+
+  getSectionLinks().forEach((link) => {
+    const isActive = link.dataset.sectionLink === sectionId;
+    if (link.classList.contains('text-white')) {
+      return;
+    }
+    link.classList.toggle('text-brand-700', isActive);
+    link.classList.toggle('font-bold', isActive);
+  });
+}
+
+function activateSection(sectionId, options = {}) {
+  const { updateHash = true, scroll = true } = options;
+  state.activeSection = sectionId;
+  renderSectionVisibility(sectionId);
+
+  const panel = document.querySelector(`[data-section-panel="${sectionId}"]`);
+  if (!panel) {
+    return;
+  }
+
+  if (updateHash) {
+    history.replaceState(null, '', `#${sectionId}`);
+  }
+  if (scroll) {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function resolveInitialSection() {
+  const hash = window.location.hash.replace('#', '');
+  if (hash && document.querySelector(`[data-section-panel="${hash}"]`)) {
+    return hash;
+  }
+  return '';
 }
 
 function resetForm() {
@@ -591,6 +640,7 @@ function handleContactSubmit(event) {
 async function init() {
   try {
     state.locale = resolveInitialLocale();
+    state.activeSection = resolveInitialSection();
     const response = await fetch('./data.json');
     state.data = await response.json();
 
@@ -606,13 +656,28 @@ async function init() {
       }
     };
 
+    const onSectionLinkClick = (event) => {
+      const link = event.target.closest('[data-section-link]');
+      if (!link) {
+        return;
+      }
+      const sectionId = link.dataset.sectionLink;
+      if (!document.querySelector(`[data-section-panel="${sectionId}"]`)) {
+        return;
+      }
+      event.preventDefault();
+      activateSection(sectionId);
+    };
+
     elements.languageSwitcher?.addEventListener('click', onLanguageSwitch);
     elements.mobileLanguageSwitcher?.addEventListener('click', onLanguageSwitch);
+    document.addEventListener('click', onSectionLinkClick);
 
     elements.findButton.addEventListener('click', () => {
       const profile = getProfile();
       saveProfile(profile);
       renderResults(profile);
+      activateSection('assessment', { updateHash: true, scroll: false });
     });
     elements.resetButton.addEventListener('click', resetForm);
     elements.contactForm.addEventListener('submit', handleContactSubmit);

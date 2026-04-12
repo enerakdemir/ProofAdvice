@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,12 +48,12 @@
 
         <div class="hidden items-center gap-8 text-sm font-semibold text-slate-600 xl:flex">
           <nav class="hidden items-center gap-8 lg:flex">
-            <a href="#assessment" class="hover:text-brand-700" data-i18n="nav.assessment">Assessment</a>
-            <a href="#playbooks" class="hover:text-brand-700" data-i18n="nav.playbooks">Playbooks</a>
-            <a href="#packages" class="hover:text-brand-700" data-i18n="nav.packages">Packages</a>
-            <a href="#resources" class="hover:text-brand-700" data-i18n="nav.resources">Resources</a>
-            <a href="#faq" class="hover:text-brand-700" data-i18n="nav.faq">FAQ</a>
-            <a href="#contact" class="hover:text-brand-700" data-i18n="nav.contact">Contact</a>
+            <a href="#assessment" data-section-link="assessment" class="hover:text-brand-700" data-i18n="nav.assessment">Assessment</a>
+            <a href="#playbooks" data-section-link="playbooks" class="hover:text-brand-700" data-i18n="nav.playbooks">Playbooks</a>
+            <a href="#packages" data-section-link="packages" class="hover:text-brand-700" data-i18n="nav.packages">Packages</a>
+            <a href="#resources" data-section-link="resources" class="hover:text-brand-700" data-i18n="nav.resources">Resources</a>
+            <a href="#faq" data-section-link="faq" class="hover:text-brand-700" data-i18n="nav.faq">FAQ</a>
+            <a href="#contact" data-section-link="contact" class="hover:text-brand-700" data-i18n="nav.contact">Contact</a>
           </nav>
           <div class="min-w-[150px]">
             <div class="sr-only" data-i18n="language.label">Dil seçin</div>
@@ -66,7 +66,7 @@
             <div class="sr-only" data-i18n="language.label">Dil seçin</div>
             <div id="language-switcher-mobile" class="inline-flex rounded-full border border-slate-200 bg-white p-1 shadow-sm"></div>
           </div>
-          <a href="#assessment" class="rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-900">
+          <a href="#assessment" data-section-link="assessment" class="rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-900">
             <span data-i18n="header.cta">Start Assessment</span>
           </a>
         </div>
@@ -88,11 +88,11 @@
               CertiRehber helps small online sellers identify likely UK/EU document requirements, missing supplier files, key risk flags, and practical next steps from a simple intake.
             </p>
             <div class="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a href="#assessment" class="inline-flex items-center justify-center gap-2 rounded-full bg-brand-700 px-7 py-4 text-base font-semibold text-white shadow-panel hover:bg-brand-900">
+              <a href="#assessment" data-section-link="assessment" class="inline-flex items-center justify-center gap-2 rounded-full bg-brand-700 px-7 py-4 text-base font-semibold text-white shadow-panel hover:bg-brand-900">
                 <span data-i18n="hero.primaryCta">Run Product Check</span>
                 <i class="fa-solid fa-arrow-right"></i>
               </a>
-              <a href="#packages" class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-7 py-4 text-base font-semibold text-slate-700 hover:border-sky-300 hover:text-brand-700">
+              <a href="#packages" data-section-link="packages" class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-7 py-4 text-base font-semibold text-slate-700 hover:border-sky-300 hover:text-brand-700">
                 <span data-i18n="hero.secondaryCta">View Service Packages</span>
               </a>
             </div>
@@ -136,7 +136,7 @@
         </div>
       </section>
 
-      <section id="assessment" class="mx-auto max-w-7xl px-6 py-10">
+      <section id="assessment" data-section-panel="assessment" class="hidden mx-auto max-w-7xl px-6 py-10">
         <div class="rounded-[2rem] border border-sky-100 bg-white/95 p-8 shadow-panel lg:p-10">
           <div class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
             <div>
@@ -237,7 +237,7 @@
         </div>
       </section>
 
-      <section id="playbooks" class="mx-auto max-w-7xl px-6 py-10">
+      <section id="playbooks" data-section-panel="playbooks" class="hidden mx-auto max-w-7xl px-6 py-10">
         <div class="rounded-[2rem] bg-slate-950 px-8 py-10 text-white shadow-panel">
           <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
@@ -250,7 +250,7 @@
         </div>
       </section>
 
-      <section id="packages" class="mx-auto max-w-7xl px-6 py-10">
+      <section id="packages" data-section-panel="packages" class="hidden mx-auto max-w-7xl px-6 py-10">
         <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <div class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700" data-i18n="packages.eyebrow">Service packages</div>
@@ -261,7 +261,7 @@
         <div id="package-grid" class="mt-8 grid gap-6 lg:grid-cols-3"></div>
       </section>
 
-      <section id="resources" class="mx-auto max-w-7xl px-6 py-10">
+      <section id="resources" data-section-panel="resources" class="hidden mx-auto max-w-7xl px-6 py-10">
         <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <div class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700" data-i18n="resources.eyebrow">Resources</div>
@@ -272,7 +272,7 @@
         <div id="resource-grid" class="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4"></div>
       </section>
 
-      <section id="faq" class="mx-auto max-w-7xl px-6 py-10">
+      <section id="faq" data-section-panel="faq" class="hidden mx-auto max-w-7xl px-6 py-10">
         <div class="rounded-[2rem] border border-sky-100 bg-white p-8 shadow-panel">
           <div>
             <div class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700" data-i18n="faq.eyebrow">FAQ</div>
@@ -282,7 +282,7 @@
         </div>
       </section>
 
-      <section id="contact" class="mx-auto max-w-7xl px-6 py-10 pb-20">
+      <section id="contact" data-section-panel="contact" class="hidden mx-auto max-w-7xl px-6 py-10 pb-20">
         <div class="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
           <div class="rounded-[2rem] bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-white shadow-panel">
             <div class="text-sm font-semibold uppercase tracking-[0.25em] text-sky-200" data-i18n="contact.eyebrow">Human-in-the-loop support</div>

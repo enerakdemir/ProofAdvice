@@ -1,7 +1,7 @@
 window.APP_I18N = {
   locales: [
-    { code: 'tr', label: 'TR', nativeName: 'Türkçe' },
     { code: 'en', label: 'EN', nativeName: 'English' },
+    { code: 'tr', label: 'TR', nativeName: 'Türkçe' },
     { code: 'de', label: 'DE', nativeName: 'Deutsch' }
   ],
   ui: {
