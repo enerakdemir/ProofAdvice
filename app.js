@@ -568,13 +568,18 @@ function getSectionLinks() {
 }
 
 function renderSectionVisibility(sectionId) {
+  const homePanel = document.querySelector('[data-home-panel="true"]');
+  if (homePanel) {
+    homePanel.classList.toggle('hidden', Boolean(sectionId));
+  }
+
   getSectionPanels().forEach((panel) => {
     panel.classList.toggle('hidden', panel.dataset.sectionPanel !== sectionId);
   });
 
   getSectionLinks().forEach((link) => {
     const isActive = link.dataset.sectionLink === sectionId;
-    if (link.classList.contains('text-white')) {
+    if (link.classList.contains('text-white') || link.dataset.sectionLink === 'home') {
       return;
     }
     link.classList.toggle('text-brand-700', isActive);
@@ -587,14 +592,23 @@ function activateSection(sectionId, options = {}) {
   state.activeSection = sectionId;
   renderSectionVisibility(sectionId);
 
+  if (updateHash) {
+    history.replaceState(null, '', sectionId ? `#${sectionId}` : '#hero');
+  }
+
+  if (!sectionId) {
+    const homePanel = document.querySelector('[data-home-panel="true"]');
+    if (scroll && homePanel) {
+      homePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    return;
+  }
+
   const panel = document.querySelector(`[data-section-panel="${sectionId}"]`);
   if (!panel) {
     return;
   }
 
-  if (updateHash) {
-    history.replaceState(null, '', `#${sectionId}`);
-  }
   if (scroll) {
     panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -605,6 +619,9 @@ function resolveInitialSection() {
   if (hash && document.querySelector(`[data-section-panel="${hash}"]`)) {
     return hash;
   }
+  if (hash === 'hero') {
+    return '';
+  }
   return '';
 }
 
@@ -612,6 +629,11 @@ function bindSectionLinks() {
   getSectionLinks().forEach((link) => {
     link.addEventListener('click', (event) => {
       const sectionId = link.dataset.sectionLink;
+      if (sectionId === 'home') {
+        event.preventDefault();
+        activateSection('', { updateHash: true, scroll: true });
+        return;
+      }
       if (!sectionId || !document.querySelector(`[data-section-panel="${sectionId}"]`)) {
         return;
       }
