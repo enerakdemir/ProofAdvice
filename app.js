@@ -581,6 +581,48 @@ function handleContactSubmit(event) {
   elements.contactForm.reset();
 }
 
+function handleRouteChange() {
+  const hash = window.location.hash || '#hero';
+  const sections = document.querySelectorAll('main > section');
+  let matched = false;
+  
+  sections.forEach(section => {
+    if ('#' + section.id === hash) {
+      section.classList.remove('hidden');
+      matched = true;
+    } else {
+      section.classList.add('hidden');
+    }
+  });
+
+  if (!matched && sections.length > 0) {
+    sections.forEach(section => {
+      if (section.id === 'hero') {
+        section.classList.remove('hidden');
+      } else {
+        section.classList.add('hidden');
+      }
+    });
+    history.replaceState(null, null, window.location.pathname + window.location.search + '#hero');
+  }
+
+  const navLinks = document.querySelectorAll('nav a');
+  navLinks.forEach(link => {
+    if (link.getAttribute('href') === (matched ? hash : '#hero')) {
+      link.classList.add('text-brand-700');
+    } else {
+      link.classList.remove('text-brand-700');
+    }
+  });
+  
+  window.scrollTo(0,0);
+}
+
+// Yönlendirici (Router) İlk Çalıştırma ve Olay Dinleyici
+window.addEventListener('hashchange', handleRouteChange);
+document.addEventListener('DOMContentLoaded', handleRouteChange); 
+handleRouteChange();
+
 function renderApp(profile) {
   const localizedFilters = getLocalizedFilters();
   const localizedMeta = getLocalizedMeta();
