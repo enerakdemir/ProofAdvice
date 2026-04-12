@@ -621,7 +621,6 @@ function handleRouteChange() {
 // Yönlendirici (Router) İlk Çalıştırma ve Olay Dinleyici
 window.addEventListener('hashchange', handleRouteChange);
 document.addEventListener('DOMContentLoaded', handleRouteChange); 
-handleRouteChange();
 
 function renderApp(profile) {
   const localizedFilters = getLocalizedFilters();
