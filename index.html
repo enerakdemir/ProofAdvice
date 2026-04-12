@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CertiRehber | UK/EU Product Compliance Advisor</title>
-  <meta name="description" content="UK ve AB pazarına teknik ürün satan e-ticaret markaları için hangi compliance dokümanlarının gerektiğini hızla öğrenin.">
+  <meta name="description" content="Quickly learn which compliance documents your technical product is likely to need before entering UK and EU markets.">
   <meta name="theme-color" content="#0f4c81">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -222,7 +222,7 @@
             </div>
           </div>
 
-          <div class="mt-10 rounded-[1.75rem] border border-dashed border-sky-200 bg-sky-50/60 p-6">
+            <div class="mt-10 rounded-[1.75rem] border border-dashed border-sky-200 bg-sky-50/60 p-6">
             <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <div class="text-lg font-bold text-slate-900" data-i18n="results.reportTitle">Compliance report area</div>
@@ -230,6 +230,7 @@
               </div>
               <div id="saved-status" class="rounded-full bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-700">Waiting for local save</div>
             </div>
+            <div id="analysis-status" class="mt-4 hidden rounded-2xl border border-sky-200 bg-white px-4 py-3 text-sm text-slate-600"></div>
             <div id="summary-grid" class="mt-6 grid gap-6 lg:grid-cols-3"></div>
             <div id="result-grid" class="mt-6 grid gap-6 xl:grid-cols-2"></div>
             <div id="next-actions" class="mt-6 grid gap-4 md:grid-cols-3"></div>
@@ -338,6 +339,7 @@
     </footer>
   </div>
 
+  <script src="./runtime-config.js"></script>
   <script src="./translations.js"></script>
   <script src="./app.js"></script>
 </body>

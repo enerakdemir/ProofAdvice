@@ -20,6 +20,7 @@ const elements = {
   summaryGrid: document.getElementById('summary-grid'),
   resultGrid: document.getElementById('result-grid'),
   nextActions: document.getElementById('next-actions'),
+  analysisStatus: document.getElementById('analysis-status'),
   statsGrid: document.getElementById('stats-grid'),
   playbookGrid: document.getElementById('playbook-grid'),
   packageGrid: document.getElementById('package-grid'),
@@ -37,7 +38,8 @@ const elements = {
 const state = {
   data: null,
   locale: 'en',
-  activeSection: ''
+  activeSection: '',
+  aiAnalysis: null
 };
 
 function getSupportedLocales() {
@@ -128,6 +130,29 @@ function setSavedStatus(mode) {
   elements.savedStatus.textContent = t(keyMap[mode] || keyMap.waiting);
 }
 
+function setAnalysisStatus(message = '', tone = 'neutral') {
+  if (!elements.analysisStatus) {
+    return;
+  }
+
+  if (!message) {
+    elements.analysisStatus.className = 'mt-4 hidden rounded-2xl border border-sky-200 bg-white px-4 py-3 text-sm text-slate-600';
+    elements.analysisStatus.textContent = '';
+    return;
+  }
+
+  const toneClasses = {
+    neutral: 'border-sky-200 bg-white text-slate-600',
+    info: 'border-sky-200 bg-sky-50 text-brand-700',
+    success: 'border-emerald-200 bg-emerald-50 text-emerald-800',
+    warning: 'border-amber-200 bg-amber-50 text-amber-800',
+    error: 'border-rose-200 bg-rose-50 text-rose-800'
+  };
+
+  elements.analysisStatus.className = `mt-4 rounded-2xl border px-4 py-3 text-sm ${toneClasses[tone] || toneClasses.neutral}`;
+  elements.analysisStatus.textContent = message;
+}
+
 function populateSelect(selectElement, placeholder, items) {
   selectElement.innerHTML = '';
   selectElement.appendChild(createOption('', placeholder));
@@ -188,6 +213,22 @@ function getProfile() {
   };
 }
 
+function isProfileReady(profile) {
+  return Boolean(
+    profile.productName
+    && profile.salesChannel
+    && profile.productCategory
+    && profile.sellerRole
+    && profile.ceStatus
+    && profile.electrical
+    && profile.battery
+    && profile.wireless
+    && profile.skinContact
+    && profile.children
+    && profile.markets.length
+  );
+}
+
 function saveProfile(profile) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
   setSavedStatus('updated');
@@ -236,6 +277,118 @@ function createEmptyState() {
 function uniquePush(list, value) {
   if (value && !list.includes(value)) {
     list.push(value);
+  }
+}
+
+function normalizeTextList(value) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((item) => (typeof item === 'string' ? item.trim() : ''))
+    .filter(Boolean);
+}
+
+function normalizeSourceList(value) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((item) => {
+      if (typeof item === 'string') {
+        const trimmed = item.trim();
+        return trimmed ? { title: trimmed, url: trimmed } : null;
+      }
+
+      if (!item || typeof item !== 'object') {
+        return null;
+      }
+
+      const title = typeof item.title === 'string' ? item.title.trim() : '';
+      const url = typeof item.url === 'string' ? item.url.trim() : '';
+      if (!title && !url) {
+        return null;
+      }
+      return {
+        title: title || url,
+        url
+      };
+    })
+    .filter(Boolean);
+}
+
+function normalizeAiAnalysis(value) {
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
+
+  return {
+    summary: typeof value.summary === 'string' ? value.summary.trim() : '',
+    requiredDocuments: normalizeTextList(value.requiredDocuments),
+    regulations: normalizeTextList(value.regulations),
+    missing: normalizeTextList(value.missing),
+    risks: normalizeTextList(value.risks),
+    nextSteps: normalizeTextList(value.nextSteps),
+    supportPath: normalizeTextList(value.supportPath),
+    sourcesUsed: normalizeSourceList(value.sourcesUsed)
+  };
+}
+
+function getAiEndpoint() {
+  return window.APP_CONFIG?.AI_ENDPOINT?.trim() || '';
+}
+
+async function fetchAiAnalysis(profile) {
+  const endpoint = getAiEndpoint();
+  if (!endpoint) {
+    state.aiAnalysis = null;
+    setAnalysisStatus(t('results.aiUnavailable'), 'warning');
+    return null;
+  }
+
+  setAnalysisStatus(t('results.aiLoading'), 'info');
+
+  const controller = new AbortController();
+  const timeout = Number(window.APP_CONFIG?.AI_TIMEOUT_MS || 30000);
+  const timeoutId = window.setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        locale: state.locale,
+        profile
+      }),
+      signal: controller.signal
+    });
+
+    if (!response.ok) {
+      throw new Error(`AI request failed with status ${response.status}`);
+    }
+
+    const payload = await response.json();
+    const analysis = normalizeAiAnalysis(payload.analysis);
+    if (!analysis) {
+      throw new Error('AI response did not include a valid analysis payload');
+    }
+
+    state.aiAnalysis = analysis;
+    setAnalysisStatus(t('results.aiReady'), 'success');
+    renderResults(profile);
+    return analysis;
+  } catch (error) {
+    state.aiAnalysis = null;
+    const message = error.name === 'AbortError' ? t('results.aiError') : t('results.aiFallback');
+    setAnalysisStatus(message, 'warning');
+    renderResults(profile);
+    return null;
+  } finally {
+    window.clearTimeout(timeoutId);
   }
 }
 
@@ -460,46 +613,69 @@ function renderFaq() {
 }
 
 function renderResults(profile) {
-  const isReady = profile.productName
-    && profile.salesChannel
-    && profile.productCategory
-    && profile.sellerRole
-    && profile.ceStatus
-    && profile.electrical
-    && profile.battery
-    && profile.wireless
-    && profile.skinContact
-    && profile.children
-    && profile.markets.length;
+  const isReady = isProfileReady(profile);
 
   if (!isReady) {
+    if (!state.aiAnalysis) {
+      setAnalysisStatus();
+    }
     elements.summaryGrid.innerHTML = createEmptyState();
     elements.resultGrid.innerHTML = '';
     elements.nextActions.innerHTML = '';
     return;
   }
 
-  const analysis = buildAnalysis(profile);
+  const fallbackAnalysis = buildAnalysis(profile);
+  const aiAnalysis = state.aiAnalysis;
+  const analysis = aiAnalysis || fallbackAnalysis;
   const channelLabel = getFilterLabel('channels', profile.salesChannel);
   const categoryLabel = getFilterLabel('categories', profile.productCategory);
   const roleLabel = getFilterLabel('sellerRoles', profile.sellerRole);
   const ceLabel = getFilterLabel('ceStatuses', profile.ceStatus);
   const marketLabel = profile.markets.map((item) => getFilterLabel('markets', item)).join(', ');
 
-  elements.summaryGrid.innerHTML = [
-    createSummaryCard(t('results.summaryOne'), profile.productName, `${categoryLabel} · ${channelLabel} · ${marketLabel}`),
+  const summaryCards = [
+    createSummaryCard(t('results.summaryOne'), profile.productName, `${categoryLabel} | ${channelLabel} | ${marketLabel}`),
     createSummaryCard(t('results.summaryTwo'), roleLabel, ceLabel),
     createSummaryCard(t('results.summaryThree'), getDocumentCountText(profile), profile.productUrl || t('common.none'))
-  ].join('');
+  ];
 
-  elements.resultGrid.innerHTML = [
+  if (aiAnalysis?.summary) {
+    summaryCards.push(
+      createSummaryCard(
+        t('results.summaryAi'),
+        aiAnalysis.summary,
+        aiAnalysis.sourcesUsed.length ? t('results.sourcesTitle') : t('results.nextTitle')
+      )
+    );
+  }
+
+  elements.summaryGrid.innerHTML = summaryCards.join('');
+
+  const resultCards = [
     buildResultCard(t('results.documentsTitle'), analysis.requiredDocuments),
     buildResultCard(t('results.regulationsTitle'), analysis.regulations),
     buildResultCard(t('results.missingTitle'), analysis.missing),
     buildResultCard(t('results.risksTitle'), analysis.risks, 'warning')
-  ].join('');
+  ];
 
-  const packagePath = state.data.packages.map((item) => `${localize(item.name)} · ${item.price}`);
+  if (aiAnalysis?.sourcesUsed?.length) {
+    resultCards.push(
+      buildResultCard(
+        t('results.sourcesTitle'),
+        aiAnalysis.sourcesUsed.map((source) => source.url
+          ? '<a class="font-semibold text-brand-700 underline decoration-sky-300 underline-offset-4" href="' + source.url + '" target="_blank" rel="noreferrer">' + source.title + '</a>'
+          : source.title)
+      )
+    );
+  }
+
+  elements.resultGrid.innerHTML = resultCards.join('');
+
+  const packagePath = analysis.supportPath?.length
+    ? analysis.supportPath
+    : state.data.packages.map((item) => `${localize(item.name)} | ${item.price}`);
+
   elements.nextActions.innerHTML = [
     buildResultCard(t('results.nextTitle'), analysis.nextSteps),
     buildResultCard(t('results.packagesTitle'), packagePath)
@@ -553,6 +729,7 @@ function renderApp(profile) {
 
 function handleLanguageChange(locale) {
   state.locale = locale;
+  state.aiAnalysis = null;
   saveLocale(locale);
   const currentProfile = getProfile();
   renderApp(currentProfile);
@@ -659,9 +836,11 @@ function resetForm() {
     markets: [],
     documents: []
   };
+  state.aiAnalysis = null;
   localStorage.removeItem(STORAGE_KEY);
   restoreProfile(emptyProfile);
   setSavedStatus('cleared');
+  setAnalysisStatus();
   renderResults(getProfile());
 }
 
@@ -696,16 +875,18 @@ async function init() {
     bindSectionLinks();
     window.addEventListener('hashchange', () => {
       const sectionId = resolveInitialSection();
-      if (sectionId) {
-        activateSection(sectionId, { updateHash: false, scroll: false });
-      }
+      activateSection(sectionId, { updateHash: false, scroll: false });
     });
 
-    elements.findButton.addEventListener('click', () => {
+    elements.findButton.addEventListener('click', async () => {
       const profile = getProfile();
+      state.aiAnalysis = null;
       saveProfile(profile);
       renderResults(profile);
       activateSection('assessment', { updateHash: true, scroll: false });
+      if (isProfileReady(profile)) {
+        await fetchAiAnalysis(profile);
+      }
     });
     elements.resetButton.addEventListener('click', resetForm);
     elements.contactForm.addEventListener('submit', handleContactSubmit);

@@ -65,12 +65,19 @@ window.APP_I18N = {
         summaryOne: 'Ürün ve kanal',
         summaryTwo: 'Satıcı pozisyonu',
         summaryThree: 'Mevcut dosya durumu',
+        summaryAi: 'AI compliance özeti',
         documentsTitle: 'Likely required documents',
         regulationsTitle: 'Possible regulations / frameworks',
         missingTitle: 'Missing information or files',
         risksTitle: 'Risk flags',
         nextTitle: 'Recommended next steps',
-        packagesTitle: 'Suggested support path'
+        packagesTitle: 'Suggested support path',
+        sourcesTitle: 'Kullanılan resmi kaynaklar',
+        aiLoading: 'AI, resmi UK/EU kaynaklarını kontrol ederek grounded analiz hazırlıyor...',
+        aiReady: 'AI analizi resmi kaynak bağlamıyla güncellendi.',
+        aiFallback: 'Canlı AI analizi şu anda kullanılamıyor. Yerleşik karar motoru gösteriliyor.',
+        aiUnavailable: 'AI endpoint henüz yapılandırılmadı. Canlı analiz için güvenli worker endpoint eklenmeli.',
+        aiError: 'AI analizi tamamlanamadı. Fallback karar motoru çalışmaya devam ediyor.'
       },
       playbooks: {
         eyebrow: 'Go-to-market playbooklar',
@@ -194,12 +201,19 @@ window.APP_I18N = {
         summaryOne: 'Product and channel',
         summaryTwo: 'Seller position',
         summaryThree: 'Current file readiness',
+        summaryAi: 'AI compliance summary',
         documentsTitle: 'Likely required documents',
         regulationsTitle: 'Possible regulations / frameworks',
         missingTitle: 'Missing information or files',
         risksTitle: 'Risk flags',
         nextTitle: 'Recommended next steps',
-        packagesTitle: 'Suggested support path'
+        packagesTitle: 'Suggested support path',
+        sourcesTitle: 'Official sources used',
+        aiLoading: 'AI is checking official UK/EU sources and building a grounded analysis...',
+        aiReady: 'AI analysis updated using official-source context.',
+        aiFallback: 'Live AI analysis is unavailable right now. Showing the built-in decision engine instead.',
+        aiUnavailable: 'AI endpoint is not configured yet. Configure the secure worker endpoint to enable live analysis.',
+        aiError: 'AI analysis could not be completed. The fallback decision engine is still available.'
       },
       playbooks: {
         eyebrow: 'Go-to-market playbooks',
@@ -323,12 +337,19 @@ window.APP_I18N = {
         summaryOne: 'Produkt und Kanal',
         summaryTwo: 'Verkäuferposition',
         summaryThree: 'Aktueller Dokumentenstand',
+        summaryAi: 'KI-Compliance-Zusammenfassung',
         documentsTitle: 'Wahrscheinlich erforderliche Dokumente',
         regulationsTitle: 'Mögliche Regelwerke / Rahmen',
         missingTitle: 'Fehlende Informationen oder Unterlagen',
         risksTitle: 'Risikoflaggen',
         nextTitle: 'Empfohlene nächste Schritte',
-        packagesTitle: 'Empfohlener Support-Pfad'
+        packagesTitle: 'Empfohlener Support-Pfad',
+        sourcesTitle: 'Verwendete offizielle Quellen',
+        aiLoading: 'Die KI prüft offizielle UK/EU-Quellen und erstellt eine fundierte Analyse...',
+        aiReady: 'Die KI-Analyse wurde mit offiziellem Quellenkontext aktualisiert.',
+        aiFallback: 'Die Live-KI-Analyse ist derzeit nicht verfügbar. Stattdessen wird die eingebaute Entscheidungslogik angezeigt.',
+        aiUnavailable: 'Der KI-Endpunkt ist noch nicht konfiguriert. Für die Live-Analyse muss ein sicherer Worker-Endpunkt eingerichtet werden.',
+        aiError: 'Die KI-Analyse konnte nicht abgeschlossen werden. Die Fallback-Entscheidungslogik bleibt verfügbar.'
       },
       playbooks: {
         eyebrow: 'Go-to-market Playbooks',

@@ -28,6 +28,7 @@ jobs:
           cp index.html _site/index.html
           cp app.js _site/app.js
           cp translations.js _site/translations.js
+          cp runtime-config.js _site/runtime-config.js
           cp data.json _site/data.json
           cp robots.txt _site/robots.txt
           touch _site/.nojekyll
