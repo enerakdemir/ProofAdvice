@@ -608,6 +608,19 @@ function resolveInitialSection() {
   return '';
 }
 
+function bindSectionLinks() {
+  getSectionLinks().forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const sectionId = link.dataset.sectionLink;
+      if (!sectionId || !document.querySelector(`[data-section-panel="${sectionId}"]`)) {
+        return;
+      }
+      event.preventDefault();
+      activateSection(sectionId);
+    });
+  });
+}
+
 function resetForm() {
   const emptyProfile = {
     productName: '',
@@ -656,22 +669,15 @@ async function init() {
       }
     };
 
-    const onSectionLinkClick = (event) => {
-      const link = event.target.closest('[data-section-link]');
-      if (!link) {
-        return;
-      }
-      const sectionId = link.dataset.sectionLink;
-      if (!document.querySelector(`[data-section-panel="${sectionId}"]`)) {
-        return;
-      }
-      event.preventDefault();
-      activateSection(sectionId);
-    };
-
     elements.languageSwitcher?.addEventListener('click', onLanguageSwitch);
     elements.mobileLanguageSwitcher?.addEventListener('click', onLanguageSwitch);
-    document.addEventListener('click', onSectionLinkClick);
+    bindSectionLinks();
+    window.addEventListener('hashchange', () => {
+      const sectionId = resolveInitialSection();
+      if (sectionId) {
+        activateSection(sectionId, { updateHash: false, scroll: false });
+      }
+    });
 
     elements.findButton.addEventListener('click', () => {
       const profile = getProfile();
