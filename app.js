@@ -1,5 +1,25 @@
 const STORAGE_KEY = 'certirehber-product-profile';
 const LANGUAGE_KEY = 'certirehber-language';
+const GEMINI_KEY_STORAGE = 'certirehber-gemini-api-key';
+const BROWSER_GEMINI_MODELS = ['gemini-3.1-flash-lite-preview', 'gemini-3-flash-preview'];
+const OFFICIAL_SOURCE_REFERENCES = [
+  {
+    title: 'GOV.UK: placing manufactured goods on the market in Great Britain',
+    url: 'https://www.gov.uk/guidance/placing-manufactured-goods-on-the-market-in-great-britain'
+  },
+  {
+    title: 'Your Europe: preparing technical documentation',
+    url: 'https://europa.eu/youreurope/business/product-requirements/compliance/preparing-technical-documentation/index_en.htm'
+  },
+  {
+    title: 'Your Europe: CE marking',
+    url: 'https://europa.eu/youreurope/business/product-requirements/labels-markings/ce-marking/index_en.htm'
+  },
+  {
+    title: 'Your Europe: declaration of conformity',
+    url: 'https://europa.eu/youreurope/business/product-requirements/compliance/declaration-of-conformity/index_en.htm'
+  }
+];
 
 const elements = {
   productName: document.getElementById('product-name'),
@@ -17,6 +37,10 @@ const elements = {
   documentsContainer: document.getElementById('documents-container'),
   findButton: document.getElementById('find-button'),
   resetButton: document.getElementById('reset-button'),
+  geminiApiKey: document.getElementById('gemini-api-key'),
+  saveApiKeyButton: document.getElementById('save-api-key-button'),
+  clearApiKeyButton: document.getElementById('clear-api-key-button'),
+  apiKeyStatus: document.getElementById('api-key-status'),
   summaryGrid: document.getElementById('summary-grid'),
   resultGrid: document.getElementById('result-grid'),
   nextActions: document.getElementById('next-actions'),
@@ -119,6 +143,18 @@ function saveLocale(locale) {
   localStorage.setItem(LANGUAGE_KEY, locale);
 }
 
+function getBrowserApiKey() {
+  return localStorage.getItem(GEMINI_KEY_STORAGE)?.trim() || '';
+}
+
+function saveBrowserApiKey(apiKey) {
+  localStorage.setItem(GEMINI_KEY_STORAGE, apiKey.trim());
+}
+
+function clearBrowserApiKey() {
+  localStorage.removeItem(GEMINI_KEY_STORAGE);
+}
+
 function setSavedStatus(mode) {
   const keyMap = {
     waiting: 'status.waiting',
@@ -128,6 +164,19 @@ function setSavedStatus(mode) {
     error: 'status.error'
   };
   elements.savedStatus.textContent = t(keyMap[mode] || keyMap.waiting);
+}
+
+function renderApiKeyStatus() {
+  if (!elements.apiKeyStatus || !elements.geminiApiKey) {
+    return;
+  }
+
+  const apiKey = getBrowserApiKey();
+  elements.geminiApiKey.value = apiKey;
+  elements.apiKeyStatus.textContent = apiKey ? t('assessment.apiKeySaved') : t('assessment.apiKeyMissing');
+  elements.apiKeyStatus.className = apiKey
+    ? 'mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700'
+    : 'mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500';
 }
 
 function setAnalysisStatus(message = '', tone = 'neutral') {
@@ -336,6 +385,122 @@ function normalizeAiAnalysis(value) {
   };
 }
 
+function parseModelJson(text) {
+  const trimmed = text.trim();
+  const fencedMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  const candidate = fencedMatch ? fencedMatch[1] : trimmed;
+  return JSON.parse(candidate);
+}
+
+function buildBrowserPrompt(profile) {
+  return `
+You are a UK/EU product compliance assistant for small e-commerce sellers.
+
+Task:
+- Review the product intake.
+- Use the official references below as the grounding list for your answer.
+- Do not invent certifications or legal certainty.
+- If information is missing, say so clearly.
+- Keep the output practical and seller-friendly.
+- Focus on likely UK and EU market-entry requirements for technical products.
+
+Return JSON only in this exact format:
+{
+  "summary": "short paragraph",
+  "requiredDocuments": ["..."],
+  "regulations": ["..."],
+  "missing": ["..."],
+  "risks": ["..."],
+  "nextSteps": ["..."],
+  "supportPath": ["..."],
+  "sourcesUsed": [
+    { "title": "...", "url": "..." }
+  ]
+}
+
+Rules:
+- Write the output in locale "${state.locale}".
+- Keep arrays concise and actionable.
+- Only use URLs from the official references list.
+- If something is uncertain, put it under "missing" or "risks".
+
+Product intake:
+${JSON.stringify(profile, null, 2)}
+
+Official references:
+${OFFICIAL_SOURCE_REFERENCES.map((source) => `- ${source.title}: ${source.url}`).join('\n')}
+`.trim();
+}
+
+async function callBrowserGeminiModel(prompt, apiKey, model) {
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: prompt }]
+        }
+      ],
+      generationConfig: {
+        temperature: 0.1,
+        responseMimeType: 'application/json'
+      }
+    })
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Browser Gemini request failed for ${model}: ${response.status} ${errorText}`);
+  }
+
+  const payload = await response.json();
+  const text = payload?.candidates?.[0]?.content?.parts?.map((part) => part.text || '').join('') || '';
+  if (!text.trim()) {
+    throw new Error(`Browser Gemini returned an empty response for ${model}.`);
+  }
+
+  const parsed = parseModelJson(text);
+  return normalizeAiAnalysis({
+    ...parsed,
+    sourcesUsed: Array.isArray(parsed.sourcesUsed) && parsed.sourcesUsed.length
+      ? parsed.sourcesUsed
+      : OFFICIAL_SOURCE_REFERENCES
+  });
+}
+
+async function fetchBrowserAiAnalysis(profile) {
+  const apiKey = getBrowserApiKey();
+  if (!apiKey) {
+    state.aiAnalysis = null;
+    setAnalysisStatus(t('results.aiUnavailable'), 'warning');
+    return null;
+  }
+
+  const prompt = buildBrowserPrompt(profile);
+  let lastError = null;
+
+  for (const model of BROWSER_GEMINI_MODELS) {
+    try {
+      const analysis = await callBrowserGeminiModel(prompt, apiKey, model);
+      state.aiAnalysis = analysis;
+      setAnalysisStatus(t('results.aiBrowserReady', { model }), 'success');
+      renderResults(profile);
+      return analysis;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  state.aiAnalysis = null;
+  setAnalysisStatus(t('results.aiBrowserError'), 'warning');
+  renderResults(profile);
+  return null;
+}
+
 function getAiEndpoint() {
   return window.APP_CONFIG?.AI_ENDPOINT?.trim() || '';
 }
@@ -343,9 +508,7 @@ function getAiEndpoint() {
 async function fetchAiAnalysis(profile) {
   const endpoint = getAiEndpoint();
   if (!endpoint) {
-    state.aiAnalysis = null;
-    setAnalysisStatus(t('results.aiUnavailable'), 'warning');
-    return null;
+    return fetchBrowserAiAnalysis(profile);
   }
 
   setAnalysisStatus(t('results.aiLoading'), 'info');
@@ -710,6 +873,7 @@ function renderForm(profile) {
 function renderApp(profile) {
   applyStaticTranslations();
   renderLanguageSwitchers();
+  renderApiKeyStatus();
   renderStats();
   renderPlaybooks();
   renderPackages();
@@ -851,6 +1015,28 @@ function handleContactSubmit(event) {
   elements.contactForm.reset();
 }
 
+function handleSaveApiKey() {
+  const apiKey = elements.geminiApiKey?.value?.trim() || '';
+  if (!apiKey) {
+    clearBrowserApiKey();
+  } else {
+    saveBrowserApiKey(apiKey);
+  }
+  renderApiKeyStatus();
+  setAnalysisStatus(apiKey ? t('results.aiBrowserConfigured') : t('results.aiUnavailable'), apiKey ? 'info' : 'warning');
+}
+
+function handleClearApiKey() {
+  clearBrowserApiKey();
+  if (elements.geminiApiKey) {
+    elements.geminiApiKey.value = '';
+  }
+  renderApiKeyStatus();
+  state.aiAnalysis = null;
+  setAnalysisStatus(t('results.aiUnavailable'), 'warning');
+  renderResults(getProfile());
+}
+
 async function init() {
   try {
     state.locale = resolveInitialLocale();
@@ -889,6 +1075,8 @@ async function init() {
       }
     });
     elements.resetButton.addEventListener('click', resetForm);
+    elements.saveApiKeyButton?.addEventListener('click', handleSaveApiKey);
+    elements.clearApiKeyButton?.addEventListener('click', handleClearApiKey);
     elements.contactForm.addEventListener('submit', handleContactSubmit);
   } catch (error) {
     applyStaticTranslations();

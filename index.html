@@ -219,6 +219,19 @@
                   <span data-i18n="assessment.resetButton">Reset</span>
                 </button>
               </div>
+
+              <div class="mt-6 rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
+                <div class="text-sm font-semibold uppercase tracking-[0.2em] text-brand-700" data-i18n="assessment.aiTestEyebrow">AI test mode</div>
+                <p class="mt-3 text-sm leading-6 text-slate-600" data-i18n="assessment.aiTestBody">
+                  For testing only, you can enter a Gemini API key here. It stays in this browser and is not committed to the repo.
+                </p>
+                <div class="mt-4 flex flex-col gap-3 md:flex-row">
+                  <input id="gemini-api-key" type="password" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="assessment.placeholders.geminiApiKey" placeholder="Enter Gemini API key for local testing">
+                  <button id="save-api-key-button" type="button" class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:border-sky-300 hover:text-brand-700" data-i18n="assessment.saveApiKey">Save key</button>
+                  <button id="clear-api-key-button" type="button" class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:border-rose-300 hover:text-rose-700" data-i18n="assessment.clearApiKey">Clear key</button>
+                </div>
+                <div id="api-key-status" class="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500"></div>
+              </div>
             </div>
           </div>
 

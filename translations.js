@@ -52,8 +52,15 @@ window.APP_I18N = {
         },
         placeholders: {
           productName: 'Ürün adını girin',
-          productUrl: 'Amazon, Shopify veya tedarikçi linki'
+          productUrl: 'Amazon, Shopify veya tedarikçi linki',
+          geminiApiKey: 'Yerel test için Gemini API key girin'
         },
+        aiTestEyebrow: 'AI test modu',
+        aiTestBody: 'Sadece test için Gemini API key girebilirsiniz. Bu anahtar sadece bu tarayıcıda kalır ve repoya commit edilmez.',
+        saveApiKey: 'Anahtarı kaydet',
+        clearApiKey: 'Anahtarı temizle',
+        apiKeySaved: 'Tarayıcı anahtarı kaydedildi',
+        apiKeyMissing: 'Tarayıcı anahtarı girilmedi',
         findButton: 'Compliance Overview Oluştur',
         resetButton: 'Temizle'
       },
@@ -75,8 +82,11 @@ window.APP_I18N = {
         sourcesTitle: 'Kullanılan resmi kaynaklar',
         aiLoading: 'AI, resmi UK/EU kaynaklarını kontrol ederek grounded analiz hazırlıyor...',
         aiReady: 'AI analizi resmi kaynak bağlamıyla güncellendi.',
+        aiBrowserConfigured: 'Tarayıcı test modu aktif. AI isteği kaydedilmiş Gemini API key ile gönderilecek.',
+        aiBrowserReady: 'Tarayıcı test modu ile AI analizi tamamlandı ({model}).',
+        aiBrowserError: 'Tarayıcı test modunda Gemini çağrısı başarısız oldu. API key veya model erişimini kontrol edin.',
         aiFallback: 'Canlı AI analizi şu anda kullanılamıyor. Yerleşik karar motoru gösteriliyor.',
-        aiUnavailable: 'AI endpoint henüz yapılandırılmadı. Canlı analiz için güvenli worker endpoint eklenmeli.',
+        aiUnavailable: 'AI henüz aktif değil. Canlı worker endpoint ekleyin veya test için Gemini API key girin.',
         aiError: 'AI analizi tamamlanamadı. Fallback karar motoru çalışmaya devam ediyor.'
       },
       playbooks: {
@@ -188,8 +198,15 @@ window.APP_I18N = {
         },
         placeholders: {
           productName: 'Enter product name',
-          productUrl: 'Amazon, Shopify or supplier URL'
+          productUrl: 'Amazon, Shopify or supplier URL',
+          geminiApiKey: 'Enter Gemini API key for local testing'
         },
+        aiTestEyebrow: 'AI test mode',
+        aiTestBody: 'For testing only, you can enter a Gemini API key here. It stays in this browser and is not committed to the repo.',
+        saveApiKey: 'Save key',
+        clearApiKey: 'Clear key',
+        apiKeySaved: 'Browser key saved',
+        apiKeyMissing: 'No browser key saved',
         findButton: 'Build Compliance Overview',
         resetButton: 'Reset'
       },
@@ -211,8 +228,11 @@ window.APP_I18N = {
         sourcesTitle: 'Official sources used',
         aiLoading: 'AI is checking official UK/EU sources and building a grounded analysis...',
         aiReady: 'AI analysis updated using official-source context.',
+        aiBrowserConfigured: 'Browser test mode is active. AI requests will use the saved Gemini API key.',
+        aiBrowserReady: 'Browser test mode completed the AI analysis ({model}).',
+        aiBrowserError: 'Browser test mode could not call Gemini. Check the API key or model access.',
         aiFallback: 'Live AI analysis is unavailable right now. Showing the built-in decision engine instead.',
-        aiUnavailable: 'AI endpoint is not configured yet. Configure the secure worker endpoint to enable live analysis.',
+        aiUnavailable: 'AI is not active yet. Configure the secure worker endpoint or enter a Gemini API key for testing.',
         aiError: 'AI analysis could not be completed. The fallback decision engine is still available.'
       },
       playbooks: {
@@ -324,8 +344,15 @@ window.APP_I18N = {
         },
         placeholders: {
           productName: 'Produktname eingeben',
-          productUrl: 'Amazon-, Shopify- oder Lieferanten-URL'
+          productUrl: 'Amazon-, Shopify- oder Lieferanten-URL',
+          geminiApiKey: 'Gemini-API-Schlüssel für lokalen Test eingeben'
         },
+        aiTestEyebrow: 'KI-Testmodus',
+        aiTestBody: 'Nur zum Testen können Sie hier einen Gemini-API-Schlüssel eingeben. Er bleibt nur in diesem Browser und wird nicht ins Repo übernommen.',
+        saveApiKey: 'Schlüssel speichern',
+        clearApiKey: 'Schlüssel löschen',
+        apiKeySaved: 'Browser-Schlüssel gespeichert',
+        apiKeyMissing: 'Kein Browser-Schlüssel gespeichert',
         findButton: 'Compliance-Überblick erstellen',
         resetButton: 'Zurücksetzen'
       },
@@ -347,8 +374,11 @@ window.APP_I18N = {
         sourcesTitle: 'Verwendete offizielle Quellen',
         aiLoading: 'Die KI prüft offizielle UK/EU-Quellen und erstellt eine fundierte Analyse...',
         aiReady: 'Die KI-Analyse wurde mit offiziellem Quellenkontext aktualisiert.',
+        aiBrowserConfigured: 'Der Browser-Testmodus ist aktiv. KI-Anfragen nutzen den gespeicherten Gemini-API-Schlüssel.',
+        aiBrowserReady: 'Der Browser-Testmodus hat die KI-Analyse abgeschlossen ({model}).',
+        aiBrowserError: 'Der Browser-Testmodus konnte Gemini nicht aufrufen. Prüfen Sie API-Schlüssel oder Modellzugriff.',
         aiFallback: 'Die Live-KI-Analyse ist derzeit nicht verfügbar. Stattdessen wird die eingebaute Entscheidungslogik angezeigt.',
-        aiUnavailable: 'Der KI-Endpunkt ist noch nicht konfiguriert. Für die Live-Analyse muss ein sicherer Worker-Endpunkt eingerichtet werden.',
+        aiUnavailable: 'Die KI ist noch nicht aktiv. Konfigurieren Sie den sicheren Worker-Endpunkt oder geben Sie zum Testen einen Gemini-API-Schlüssel ein.',
         aiError: 'Die KI-Analyse konnte nicht abgeschlossen werden. Die Fallback-Entscheidungslogik bleibt verfügbar.'
       },
       playbooks: {
