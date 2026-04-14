@@ -1,18 +1,18 @@
 {
   "meta": {
-    "platform": "CertiRehber",
+    "platform": "CertPath",
     "lastGlobalUpdate": "2026-04-13",
     "version": "2.0.0",
-    "supportEmail": "destek@certirehber.com",
+    "supportEmail": "hello@certpath.com",
     "description": {
-      "tr": "UK ve AB pazarına teknik ürün satan e-ticaret markaları için compliance karar asistanı.",
-      "en": "A compliance decision assistant for e-commerce brands selling technical products into the UK and EU.",
-      "de": "Ein Compliance-Entscheidungsassistent für E-Commerce-Marken, die technische Produkte in UK und EU verkaufen."
+      "tr": "UK ve AB için muhtemel sertifika ve uyum kanıtı ihtiyaçlarını haritalayan karar asistanı.",
+      "en": "Maps likely certificate and conformity evidence needs for companies selling technical products into the UK and EU.",
+      "de": "Hilft Unternehmen, wahrscheinliche Zertifikats- und Konformitätsnachweis-Bedarfe für UK und EU einzuschätzen."
     },
     "disclaimer": {
-      "tr": "CertiRehber AI destekli bir ön değerlendirme aracıdır. Nihai uygunluk, belgelendirme ve resmi başvurular için uzman doğrulaması ve gerektiğinde akredite test veya danışmanlık desteği alınmalıdır.",
-      "en": "CertiRehber is an AI-assisted preliminary assessment tool. Final conformity, certification, and formal submissions should be verified by experts and, where needed, accredited testing or advisory support.",
-      "de": "CertiRehber ist ein KI-gestütztes Vorprüfungswerkzeug. Endgültige Konformität, Zertifizierung und formale Einreichungen sollten durch Fachleute und bei Bedarf durch akkreditierte Prüf- oder Beratungsstellen verifiziert werden."
+      "tr": "CertPath, şirketlerin ve satıcıların olası sertifika ve uyum ihtiyaçlarını ön değerlendirmek için AI destekli bir araçtır. Nihai uygunluk, belgelendirme ve resmi başvurular için uzman doğrulaması ve gerektiğinde akredite test veya danışmanlık desteği alınmalıdır.",
+      "en": "CertPath is an AI-assisted tool for a preliminary view of likely certificate and conformity needs. Final suitability, certification, and formal submissions should be verified by experts and, where needed, accredited testing or advisory support.",
+      "de": "CertPath ist ein KI-gestütztes Werkzeug für eine erste Einschätzung wahrscheinlicher Zertifikats- und Konformitätsbedarfe. Endgültige Eignung, Zertifizierung und formale Einreichungen sollten durch Fachleute und bei Bedarf durch akkreditierte Prüf- oder Beratungsstellen verifiziert werden."
     }
   },
   "stats": [

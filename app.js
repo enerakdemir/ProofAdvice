@@ -1,6 +1,6 @@
-const STORAGE_KEY = 'certirehber-product-profile';
-const LANGUAGE_KEY = 'certirehber-language';
-const GEMINI_KEY_STORAGE = 'certirehber-gemini-api-key';
+const STORAGE_KEY = 'certpath-product-profile';
+const LANGUAGE_KEY = 'certpath-language';
+const GEMINI_KEY_STORAGE = 'certpath-gemini-api-key';
 const BROWSER_GEMINI_MODELS = ['gemini-3.1-flash-lite-preview', 'gemini-3-flash-preview'];
 const OFFICIAL_SOURCE_REFERENCES = [
   {
@@ -394,10 +394,10 @@ function parseModelJson(text) {
 
 function buildBrowserPrompt(profile) {
   return `
-You are a UK/EU product compliance assistant for small e-commerce sellers.
+You are a UK/EU certificate and conformity evidence advisor for companies and small e-commerce sellers.
 
 Task:
-- Review the product intake.
+- Review the product intake and outline likely certificates, conformity documentation, and evidence the business may need.
 - Use the official references below as the grounding list for your answer.
 - Do not invent certifications or legal certainty.
 - If information is missing, say so clearly.

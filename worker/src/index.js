@@ -48,7 +48,7 @@ function stripHtml(html) {
 async function fetchSourceContext(url) {
   const response = await fetch(url, {
     headers: {
-      'User-Agent': 'CertiRehberAIWorker/1.0'
+      'User-Agent': 'CertPathAIWorker/1.0'
     }
   });
 
@@ -111,10 +111,10 @@ function extractJson(text) {
 
 function buildPrompt(profile, locale, sources) {
   return `
-You are a UK/EU product compliance assistant for small e-commerce sellers.
+You are a UK/EU certificate and conformity evidence advisor for companies and small e-commerce sellers.
 
 Task:
-- Review the product intake.
+- Review the product intake and outline likely certificates, conformity documentation, and evidence the business may need.
 - Use only the official-source context below.
 - Do not invent legal conclusions or certifications.
 - Be cautious and practical.

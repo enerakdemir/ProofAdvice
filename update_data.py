@@ -31,7 +31,7 @@ def fetch_official_text(url: str) -> str:
         url,
         timeout=30,
         headers={
-            "User-Agent": "CertiRehberUpdater/1.0 (+https://github.com/your-org/your-repo)"
+            "User-Agent": "CertPathUpdater/1.0 (+https://github.com/your-org/your-repo)"
         },
     )
     response.raise_for_status()

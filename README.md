@@ -1,13 +1,13 @@
-# CertiRehber
+# CertPath
 
-CertiRehber is a UK/EU product compliance advisor for small e-commerce sellers. The frontend runs as a static GitHub Pages site, while live AI analysis is designed to run through a secure server-side worker so API keys never ship to the browser.
+CertPath helps companies and sellers see which certificates and conformity evidence they are likely to need for the UK and EU, and what to obtain next. The frontend runs as a static GitHub Pages site, while live AI analysis is designed to run through a secure server-side worker so API keys never ship to the browser.
 
 ## What The App Does
 
 - Collects product intake details for Amazon, Shopify, Etsy, and similar sellers
 - Produces a fallback decision-engine report directly in the browser
 - Supports live AI analysis grounded in official UK/EU source pages
-- Shows likely documents, possible frameworks, missing information, risk flags, and next steps
+- Surfaces likely certificates and documentation, possible frameworks, gaps, risk flags, and next steps
 - Supports English, Turkish, and German UI
 - Refreshes reference content from official sources through a scheduled AI updater
 
