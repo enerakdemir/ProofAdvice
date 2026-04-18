@@ -295,6 +295,168 @@
           "de": "Lieferanten-Compliance-Paket"
         }
       }
+    ],
+    "batteryRemovable": [
+      {
+        "value": "built-in",
+        "label": {
+          "tr": "Gömülü / ürün içinde",
+          "en": "Built-in / internal",
+          "de": "Fest eingebaut / intern"
+        }
+      },
+      {
+        "value": "removable",
+        "label": {
+          "tr": "Çıkarılabilir hücre / paket",
+          "en": "Removable cell or pack",
+          "de": "Wechselbare Zelle oder Packung"
+        }
+      },
+      {
+        "value": "not-sure",
+        "label": {
+          "tr": "Emin değilim",
+          "en": "Not sure",
+          "de": "Nicht sicher"
+        }
+      }
+    ],
+    "batteryChemistry": [
+      {
+        "value": "li-ion",
+        "label": {
+          "tr": "Lityum iyon (Li-ion) veya benzeri şarjlı",
+          "en": "Lithium-ion (Li-ion) or similar rechargeable",
+          "de": "Lithium-Ionen (Li-Ion) oder ähnlich wiederaufladbar"
+        }
+      },
+      {
+        "value": "alkaline-or-other",
+        "label": {
+          "tr": "Alkalin, tek kullanımlık veya diğer",
+          "en": "Alkaline, single-use, or other",
+          "de": "Alkaline, Einweg oder anderes"
+        }
+      },
+      {
+        "value": "not-sure",
+        "label": {
+          "tr": "Emin değilim",
+          "en": "Not sure",
+          "de": "Nicht sicher"
+        }
+      }
+    ],
+    "electricalPowerSource": [
+      {
+        "value": "mains",
+        "label": {
+          "tr": "Şebeke (priz) ile beslenir",
+          "en": "Mains / plug-powered",
+          "de": "Netzbetrieb / Steckdose"
+        }
+      },
+      {
+        "value": "battery-only-device",
+        "label": {
+          "tr": "Sadece pil ile çalışır (şebeke yok)",
+          "en": "Battery-powered only (no mains plug)",
+          "de": "Nur batteriebetrieben (ohne Netzstecker)"
+        }
+      },
+      {
+        "value": "low-voltage-charged",
+        "label": {
+          "tr": "USB / düşük voltaj ile şarj",
+          "en": "USB / low-voltage charging",
+          "de": "USB- / Niederspannungsladung"
+        }
+      },
+      {
+        "value": "not-sure",
+        "label": {
+          "tr": "Emin değilim",
+          "en": "Not sure",
+          "de": "Nicht sicher"
+        }
+      }
+    ],
+    "wirelessTech": [
+      {
+        "value": "bluetooth",
+        "label": {
+          "tr": "Bluetooth",
+          "en": "Bluetooth",
+          "de": "Bluetooth"
+        }
+      },
+      {
+        "value": "wifi",
+        "label": {
+          "tr": "Wi‑Fi",
+          "en": "Wi‑Fi",
+          "de": "WLAN (Wi‑Fi)"
+        }
+      },
+      {
+        "value": "cellular",
+        "label": {
+          "tr": "Hücresel (4G/5G vb.)",
+          "en": "Cellular (4G/5G, etc.)",
+          "de": "Mobilfunk (4G/5G usw.)"
+        }
+      },
+      {
+        "value": "multiple",
+        "label": {
+          "tr": "Birden fazla",
+          "en": "Multiple / combination",
+          "de": "Mehrere / Kombination"
+        }
+      },
+      {
+        "value": "not-sure",
+        "label": {
+          "tr": "Emin değilim",
+          "en": "Not sure",
+          "de": "Nicht sicher"
+        }
+      }
+    ],
+    "childAgeFocus": [
+      {
+        "value": "under-3",
+        "label": {
+          "tr": "0–3 yaş odaklı",
+          "en": "Primarily under 3 years",
+          "de": "Schwerpunkt unter 3 Jahren"
+        }
+      },
+      {
+        "value": "age-3-12",
+        "label": {
+          "tr": "3–12 yaş",
+          "en": "Roughly 3–12 years",
+          "de": "Etwa 3–12 Jahre"
+        }
+      },
+      {
+        "value": "age-12-plus",
+        "label": {
+          "tr": "12+ / genç yetişkin",
+          "en": "12+ / teen-focused",
+          "de": "12+ / Jugendliche"
+        }
+      },
+      {
+        "value": "not-sure",
+        "label": {
+          "tr": "Emin değilim",
+          "en": "Not sure",
+          "de": "Nicht sicher"
+        }
+      }
     ]
   },
   "playbooks": [
@@ -352,163 +514,304 @@
   ],
   "packages": [
     {
+      "tierKey": "instant",
+      "ctaTarget": "assessment",
+      "ctaKey": "instant",
+      "highlight": false,
       "name": {
-        "tr": "Compliance Check",
-        "en": "Compliance Check",
-        "de": "Compliance Check"
+        "tr": "Instant Check",
+        "en": "Instant Check",
+        "de": "Instant Check"
       },
-      "price": "£49-£99",
+      "price": "From £49",
+      "priceDetail": {
+        "tr": "Ürün kapsamına göre net ücret; çoklu SKU için teklif.",
+        "en": "Fixed fee after quick scope check; multi-SKU quoted separately.",
+        "de": "Festpreis nach Kurz-SCOPE; mehrere SKUs separat angeboten."
+      },
       "summary": {
-        "tr": "İlk karar katmanı: hangi evraklar muhtemel, ne eksik, nerede risk var.",
-        "en": "First decision layer: what is likely required, what is missing, and where the risk sits.",
-        "de": "Erste Entscheidungsebene: was wahrscheinlich nötig ist, was fehlt und wo das Risiko liegt."
+        "tr": "Otomatik uyum snapshot’ı: muhtemel evraklar, eksikler, risk bayrakları ve net sonraki adımlar—satın almadan önce ilk filtre.",
+        "en": "Automated first-pass compliance snapshot: likely evidence, gaps, risk flags, and concrete next steps—the practical filter before you spend on labs or lawyers.",
+        "de": "Automatisierte Erst-Triage: wahrscheinliche Nachweise, Lücken, Risiken und nächste Schritte—praktischer Filter vor Labor- oder Anwaltskosten."
+      },
+      "trustLine": {
+        "tr": "Hukuki danışmanlık veya resmi belgelendirme değildir; triage içindir.",
+        "en": "Not legal advice or certification—triage and orientation only.",
+        "de": "Keine Rechtsberatung und keine Zertifizierung—nur Triage und Orientierung."
       },
       "deliverables": [
         {
-          "tr": "Ürün bazlı doküman listesi",
-          "en": "Product-specific document list",
-          "de": "Produktspezifische Dokumentenliste"
+          "tr": "Otomatik uyum snapshot’ı (intake + kural motoru)",
+          "en": "Automated compliance snapshot (intake + rule engine)",
+          "de": "Automatisierter Compliance-Snapshot (Intake + Regel-Engine)"
         },
         {
-          "tr": "Eksik evrak checklist'i",
+          "tr": "Muhtemel doküman / kanıt listesi",
+          "en": "Likely document & evidence list",
+          "de": "Liste wahrscheinlicher Dokumente und Nachweise"
+        },
+        {
+          "tr": "Eksik doküman checklist’i",
           "en": "Missing document checklist",
           "de": "Checkliste fehlender Unterlagen"
         },
         {
-          "tr": "Risk flags ve next steps",
-          "en": "Risk flags and next steps",
-          "de": "Risikohinweise und nächste Schritte"
+          "tr": "Risk bayrakları ve önceliklendirilmiş next steps",
+          "en": "Risk flags and prioritised next steps",
+          "de": "Risikoflaggen und priorisierte nächste Schritte"
         }
       ]
     },
     {
+      "tierKey": "starter",
+      "ctaTarget": "contact",
+      "ctaKey": "starter",
+      "packageInterest": "starter",
+      "highlight": true,
       "name": {
-        "tr": "Document Starter Pack",
-        "en": "Document Starter Pack",
-        "de": "Document Starter Pack"
+        "tr": "Starter Pack",
+        "en": "Starter Pack",
+        "de": "Starter Pack"
       },
-      "price": "£149-£299",
+      "price": "From £149",
+      "priceDetail": {
+        "tr": "Akredite test, Notified Body veya hukuk ücretleri dahil değildir.",
+        "en": "Excludes accredited testing, Notified Body, and legal fees.",
+        "de": "Ohne akkreditierte Prüfungen, Notified Body und externe Rechtskosten."
+      },
       "summary": {
-        "tr": "Karar raporundan taslak paket aşamasına geçmek isteyen satıcılar için.",
-        "en": "For sellers who want to move from the decision report into a draft preparation pack.",
-        "de": "Für Verkäufer, die vom Entscheidungsbericht in ein Vorbereitungs-Paket wechseln möchten."
+        "tr": "Instant Check çıktısının üzerine: DoC / kullanım kılavuzu / etiket checklist’i, tedarikçi takip şablonları ve taslak hazırlık rehberi.",
+        "en": "Everything in Instant Check, plus DoC / manual / label checklists, supplier follow-up templates, and structured draft-prep guidance—so your team knows what to assemble next.",
+        "de": "Alles aus dem Instant Check plus Checklisten für DoC, Handbuch und Kennzeichnung, Lieferanten-Follow-up-Vorlagen und strukturierte Draft-Vorbereitung."
+      },
+      "trustLine": {
+        "tr": "Şablonlar yönlendirme içindir; imzalayıcı onay ve ürün doğrulaması sizdedir.",
+        "en": "Templates are guidance; sign-off and product verification stay with you.",
+        "de": "Vorlagen sind Hilfestellung; Freigabe und Produktverifikation bleiben bei Ihnen."
       },
       "deliverables": [
         {
-          "tr": "Technical file structure",
-          "en": "Technical file structure",
-          "de": "Technische Dossier-Struktur"
+          "tr": "Instant Check kapsamının tamamı",
+          "en": "Everything included in Instant Check",
+          "de": "Der gesamte Umfang des Instant Check"
         },
         {
-          "tr": "DoC draft guidance",
-          "en": "DoC draft guidance",
-          "de": "Leitfaden für Entwurf der Konformitätserklärung"
+          "tr": "DoC, kullanım kılavuzu ve etiket odaklı checklist",
+          "en": "DoC, instruction manual, and on-product label checklist",
+          "de": "Checkliste zu DoC, Bedienungsanleitung und Produktkennzeichnung"
         },
         {
-          "tr": "Label ve manual checklist",
-          "en": "Label and manual checklist",
-          "de": "Checkliste für Kennzeichnung und Handbuch"
+          "tr": "Tedarikçi takip e-posta / soru şablonları",
+          "en": "Supplier follow-up email and question templates",
+          "de": "E-Mail- und Fragevorlagen für Lieferanten-Follow-up"
+        },
+        {
+          "tr": "Teknik dosya ve taslak hazırlık rehberi (adım adım)",
+          "en": "Technical file and draft preparation guidance (step-by-step)",
+          "de": "Leitfaden zu technischer Akte und Entwurfsvorbereitung (schrittweise)"
         }
       ]
     },
     {
+      "tierKey": "expert",
+      "ctaTarget": "contact",
+      "ctaKey": "expert",
+      "packageInterest": "expert",
+      "highlight": false,
       "name": {
-        "tr": "Full Prep Support",
-        "en": "Full Prep Support",
-        "de": "Full Prep Support"
+        "tr": "Expert Review",
+        "en": "Expert Review",
+        "de": "Expert Review"
       },
-      "price": "£300-£800",
+      "price": "From £399",
+      "priceDetail": {
+        "tr": "Tipik olarak yarım gün minimum; kesin teklif triage sonrası.",
+        "en": "Typically from a half-day minimum; firm quote after triage call.",
+        "de": "Typisch ab einem halben Tag Minimum; Festpreis nach Triage-Call."
+      },
       "summary": {
-        "tr": "Amazon veya UK/EU listing öncesi daha güçlü insan desteği isteyen markalar için.",
-        "en": "For brands that want a stronger human support layer before Amazon or UK/EU listing go-live.",
-        "de": "Für Marken, die vor dem Live-Gang auf Amazon oder in UK/EU stärkere menschliche Unterstützung möchten."
+        "tr": "İnsan incelemesi: doküman düzeni, liste hazırlığı ve ürüne özel eskalasyon—yüksek riskli veya karmaşık SKU’lar için.",
+        "en": "Human-led review: document organisation, listing readiness support, and product-specific escalation guidance—when the snapshot shows elevated risk or you are close to go-live.",
+        "de": "Menschliche Prüfung: Dokumentenorganisation, Listing-Readiness und produktspezifische Eskalation—bei erhöhtem Risiko oder vor dem Go-live."
+      },
+      "trustLine": {
+        "tr": "Resmi onay veya pazar yeri garantisi verilmez; hazırlığı güçlendirir.",
+        "en": "Does not guarantee marketplace approval—strengthens preparation and decisions.",
+        "de": "Keine Garantie für Marketplace-Freigabe—stärkt Vorbereitung und Entscheidungen."
       },
       "deliverables": [
         {
-          "tr": "Doküman organizasyonu",
-          "en": "Document organization support",
-          "de": "Unterstützung bei der Dokumentenorganisation"
+          "tr": "Uzman tarafından yapılandırılmış inceleme (çıktılarınız üzerinden)",
+          "en": "Structured human review (against your outputs and files)",
+          "de": "Strukturierte Expertenprüfung (auf Basis Ihrer Ergebnisse und Unterlagen)"
         },
         {
-          "tr": "Supplier follow-up checklist",
-          "en": "Supplier follow-up checklist",
-          "de": "Checkliste für Lieferanten-Nachverfolgung"
+          "tr": "Listing / kanal hazırlığı desteği",
+          "en": "Listing and channel readiness support",
+          "de": "Unterstützung bei Listing- und Kanal-Readiness"
         },
         {
-          "tr": "Listing readiness guidance",
-          "en": "Listing readiness guidance",
-          "de": "Leitfaden für Listing Readiness"
+          "tr": "Doküman setini düzenleme ve önceliklendirme",
+          "en": "Document set organisation and prioritisation",
+          "de": "Organisation und Priorisierung des Dokumentensatzes"
+        },
+        {
+          "tr": "Ürüne özel eskalasyon ve sonraki adım özeti",
+          "en": "Product-specific escalation notes and next-step summary",
+          "de": "Produktspezifische Eskalationshinweise und Nächste-Schritte-Übersicht"
         }
       ]
     }
   ],
   "resources": [
     {
-      "type": {
-        "tr": "Checklist",
-        "en": "Checklist",
-        "de": "Checkliste"
-      },
+      "slug": "amazon-technical-compliance-intake-checklist",
+      "categoryKey": "checklist",
+      "type": { "tr": "Checklist", "en": "Checklist", "de": "Checkliste" },
       "title": {
         "tr": "Amazon teknik ürün compliance intake checklist'i",
         "en": "Amazon technical product compliance intake checklist",
         "de": "Compliance-Intake-Checkliste für technische Amazon-Produkte"
       },
       "description": {
-        "tr": "İlk görüşmede hangi soruları soracağınızı netleştirir.",
-        "en": "Clarifies which questions should be asked in the first review.",
-        "de": "Zeigt, welche Fragen in der ersten Prüfung gestellt werden sollten."
+        "tr": "Satış kanalı, güç, pil, radyo ve hedef pazarları tek seferde toplayın—CertPath intake ile uyumludur.",
+        "en": "Channel, power, battery, radio, and target markets in one pass—aligned with CertPath’s assessment so you can run the instant check next.",
+        "de": "Kanal, Strom, Akku, Funk und Zielmärkte in einem Durchgang—passend zum CertPath-Intake für den Instant Check."
       }
     },
     {
-      "type": {
-        "tr": "Guide",
-        "en": "Guide",
-        "de": "Leitfaden"
-      },
+      "slug": "listing-readiness-uk-eu-checklist",
+      "categoryKey": "checklist",
+      "type": { "tr": "Checklist", "en": "Checklist", "de": "Checkliste" },
       "title": {
-        "tr": "Supplier evidence paketi nasıl istenir?",
+        "tr": "UK/EU listing hazırlık checklist’i",
+        "en": "UK/EU listing readiness checklist",
+        "de": "Listing-Readiness-Checkliste UK/EU"
+      },
+      "description": {
+        "tr": "Ürün sayfası, paket içeriği ve pazar gözetimi açısından tipik kontroller—hukuki onay değildir.",
+        "en": "Product page, pack contents, and market surveillance angles sellers often miss before go-live—not a legal sign-off.",
+        "de": "Produktseite, Packungsinhalt und Marktüberwachung—keine rechtliche Freigabe."
+      }
+    },
+    {
+      "slug": "electrical-products-evidence-checklist",
+      "categoryKey": "checklist",
+      "type": { "tr": "Checklist", "en": "Checklist", "de": "Checkliste" },
+      "title": {
+        "tr": "Elektrikli tüketici ürünleri: kanıt checklist’i",
+        "en": "Electrical consumer goods: evidence checklist",
+        "de": "Elektrische Verbraucherprodukte: Nachweis-Checkliste"
+      },
+      "description": {
+        "tr": "LVD/EMC, uygunluk izi ve tedarikçi test özetleri için pratik satır öğeleri.",
+        "en": "Practical line items for safety, EMC, traceability, and supplier test summaries—triage only.",
+        "de": "Praktische Punkte zu Sicherheit, EMC, Rückverfolgbarkeit und Lieferantentests—nur Triage."
+      }
+    },
+    {
+      "slug": "request-supplier-evidence-pack",
+      "categoryKey": "guide",
+      "type": { "tr": "Guide", "en": "Guide", "de": "Leitfaden" },
+      "title": {
+        "tr": "Tedarikçiden evidence paketi nasıl istenir?",
         "en": "How to request a supplier evidence pack",
-        "de": "Wie man ein Lieferanten-Nachweispaket anfordert"
+        "de": "Wie Sie ein Lieferanten-Nachweispaket anfordern"
       },
       "description": {
-        "tr": "Reseller ve importer rollerinde en çok ihtiyaç duyulan kısa rehber.",
-        "en": "A short guide for the most common reseller and importer pain point.",
-        "de": "Kurzer Leitfaden für den häufigsten Schmerzpunkt von Resellern und Importeuren."
+        "tr": "Rolünüze göre (ithalatçı, reseller, marka) hangi belgeleri kimin sağlaması gerektiğini netleştirin.",
+        "en": "Clarify who should provide which artefacts (importer, reseller, brand) and how to ask without burning the relationship.",
+        "de": "Klärung, wer welche Nachweise liefert, und wie Sie höflich aber bestimmt nachfragen."
       }
     },
     {
-      "type": {
-        "tr": "Template",
-        "en": "Template",
-        "de": "Vorlage"
-      },
+      "slug": "missing-documents-follow-up-template",
+      "categoryKey": "template",
+      "type": { "tr": "Template", "en": "Template", "de": "Vorlage" },
       "title": {
-        "tr": "Missing docs follow-up message template",
-        "en": "Missing docs follow-up message template",
-        "de": "Vorlage für Follow-up bei fehlenden Dokumenten"
+        "tr": "Eksik doküman takip mesajı şablonu",
+        "en": "Missing documents follow-up email template",
+        "de": "Vorlage: Follow-up bei fehlenden Dokumenten"
       },
       "description": {
-        "tr": "Tedarikçiden doküman isterken kullanabileceğiniz sade metin.",
-        "en": "A simple message you can use when asking a supplier for documents.",
-        "de": "Ein einfacher Text für die Anforderung von Unterlagen beim Lieferanten."
+        "tr": "Kopyala-yapıştır e-posta / mesaj metni; CE, test özeti ve DoC taleplerini yapılandırır.",
+        "en": "Copy-ready email/message text structured around CE info, test summaries, and DoC—adapt to your supplier tone.",
+        "de": "Kopierfertiger Text für CE-Infos, Testzusammenfassungen und DoC—Ton anpassen."
       }
     },
     {
-      "type": {
-        "tr": "Playbook",
-        "en": "Playbook",
-        "de": "Playbook"
-      },
+      "slug": "amazon-listing-risk-review-playbook",
+      "categoryKey": "playbook",
+      "type": { "tr": "Playbook", "en": "Playbook", "de": "Playbook" },
       "title": {
-        "tr": "Amazon listing risk review before launch",
+        "tr": "Amazon: lansman öncesi risk incelemesi",
         "en": "Amazon listing risk review before launch",
-        "de": "Amazon-Listing-Risikoprüfung vor dem Launch"
+        "de": "Amazon-Listing: Risikoreview vor dem Launch"
       },
       "description": {
-        "tr": "Listeleme öncesi son kontrol için sade bir çerçeve sunar.",
-        "en": "Provides a light framework for the final review before listing.",
-        "de": "Bietet einen leichten Rahmen für die finale Prüfung vor dem Listing."
+        "tr": "Başlık, iddialar, görüntüler ve teknik dosya tutarlılığı için son tur çerçevesi.",
+        "en": "A final-pass framework for titles, claims, imagery, and technical file consistency—before you press publish.",
+        "de": "Letzter Durchgang für Titel, Claims, Bilder und technische Akte—vor Veröffentlichung."
+      }
+    },
+    {
+      "slug": "seller-types-compliance-playbook",
+      "categoryKey": "playbook",
+      "type": { "tr": "Playbook", "en": "Playbook", "de": "Playbook" },
+      "title": {
+        "tr": "Satıcı tipi playbook’ları (marka, reseller, ithalatçı)",
+        "en": "Playbooks by seller type: brand, reseller, importer",
+        "de": "Playbooks nach Verkäufertyp: Marke, Reseller, Importeur"
+      },
+      "description": {
+        "tr": "Her rol için tipik belge akışı ve risk odağı—CertPath raporundaki satıcı rolü alanlarıyla örtüşür.",
+        "en": "Typical document flows and risk focus by role—maps to the seller-role fields in your CertPath snapshot.",
+        "de": "Typische Dokumentenflüsse und Risikofokus pro Rolle—passend zu CertPath."
+      }
+    },
+    {
+      "slug": "glossary-conformity-terms",
+      "categoryKey": "glossary",
+      "type": { "tr": "Glossary", "en": "Glossary", "de": "Glossar" },
+      "title": {
+        "tr": "Uygunluk terimleri sözlüğü (CE, DoC, test raporu…)",
+        "en": "Glossary: CE, DoC, test reports, labelling, and roles",
+        "de": "Glossar: CE, DoC, Prüfberichte, Kennzeichnung, Rollen"
+      },
+      "description": {
+        "tr": "Satıcı sohbetlerinde geçen kavramların kısa, pratik tanımları—hukuki tanım değildir.",
+        "en": "Short, practical definitions for terms you see in supplier emails and marketplace notices—not legal definitions.",
+        "de": "Kurze praktische Begriffe aus Lieferanten-Mail und Marktplatz—keine Rechtsdefinitionen."
+      }
+    },
+    {
+      "slug": "common-seller-compliance-mistakes",
+      "categoryKey": "mistakes",
+      "type": { "tr": "Article", "en": "Article", "de": "Artikel" },
+      "title": {
+        "tr": "Yaygın satıcı compliance hataları",
+        "en": "Common seller compliance mistakes",
+        "de": "Häufige Compliance-Fehler von Verkäufern"
+      },
+      "description": {
+        "tr": "Tedarikçi PDF’sine güvenmek, yanlış ekonomik operatör varsayımı ve eksik risk beyanı gibi tekrarlayan tuzaklar.",
+        "en": "Recurring traps: trusting a supplier PDF alone, wrong economic-operator assumptions, and under-stated risk claims.",
+        "de": "Typische Fallen: nur Lieferanten-PDF, falsche Wirtschaftsakteure, zu schwache Risikoangaben."
+      }
+    },
+    {
+      "slug": "example-certpath-compliance-report",
+      "categoryKey": "guide",
+      "type": { "tr": "Example", "en": "Example", "de": "Beispiel" },
+      "title": {
+        "tr": "Örnek CertPath uyum snapshot’ı",
+        "en": "Example CertPath compliance snapshot walkthrough",
+        "de": "Beispiel: CertPath-Compliance-Snapshot"
+      },
+      "description": {
+        "tr": "Rapor bölümlerinin ne anlama geldiği ve bunu Starter Pack veya Expert Review ile nasıl kullanacağınız.",
+        "en": "What each report block means and how to use it with Instant Check, Starter Pack, or Expert Review.",
+        "de": "Was jeder Berichtsblock bedeutet—nutzbar mit Instant Check, Starter Pack oder Expert Review."
       }
     }
   ],

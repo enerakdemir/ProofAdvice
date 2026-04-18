@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CertPath | Read-only compliance snapshot</title>
+  <meta name="description" content="Open a saved CertPath compliance snapshot in read-only view. Preliminary guidance only—not legal advice or certification.">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#0f4c81">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CertPath">
+  <meta property="og:title" content="CertPath | Read-only compliance snapshot">
+  <meta property="og:description" content="Open a saved CertPath compliance snapshot in read-only view. Preliminary guidance only—not legal advice or certification.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="CertPath | Read-only compliance snapshot">
+  <meta name="twitter:description" content="Open a saved CertPath compliance snapshot in read-only view. Preliminary guidance only—not legal advice or certification.">
+  <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <style>
+    .certpath-skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      z-index: 100;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      background: #0f4c81;
+      color: #fff;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    .certpath-skip-link:focus {
+      left: 1rem;
+      top: 1rem;
+      outline: 2px solid #0f7abf;
+      outline-offset: 2px;
+    }
+    :where(a, button, input, select, textarea, summary):focus-visible {
+      outline: 2px solid #0f7abf;
+      outline-offset: 2px;
+    }
+    :where(a, button):focus:not(:focus-visible) {
+      outline: none;
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'] },
+          colors: { brand: { 50: '#eef7ff', 500: '#0f7abf', 700: '#0f4c81', 900: '#0c2744' } },
+          boxShadow: { panel: '0 18px 60px rgba(15, 39, 68, 0.12)' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+  <a href="#report-view-main" class="certpath-skip-link">Skip to report</a>
+  <div class="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(14,116,214,0.12),_transparent_28%),linear-gradient(180deg,_#f8fbff_0%,_#f8fafc_100%)]">
+    <header class="border-b border-sky-100/80 bg-white/95 backdrop-blur">
+      <div class="mx-auto flex max-w-4xl items-center justify-between gap-4 px-6 py-4">
+        <a href="./index.html#assessment" class="flex items-center gap-3 text-slate-900 hover:text-brand-700" aria-label="CertPath home">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-900 text-white shadow-md">
+            <i class="fa-solid fa-shield-heart"></i>
+          </div>
+          <div>
+            <div class="text-base font-black tracking-tight">CertPath</div>
+            <div class="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-700" data-i18n="reportView.badge">Read-only report</div>
+          </div>
+        </a>
+        <a href="./index.html#assessment" class="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:border-brand-500 hover:text-brand-800" data-i18n="reportView.backHome">New assessment</a>
+      </div>
+    </header>
+    <main id="report-view-main" class="mx-auto max-w-4xl px-6 py-10" tabindex="-1">
+      <div id="report-view-status" class="hidden rounded-2xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-900"></div>
+      <div id="report-view-body" class="space-y-6"></div>
+    </main>
+  </div>
+
+  <script src="./runtime-config.js"></script>
+  <script src="./analytics/certpath-analytics.js"></script>
+  <script src="./translations.js"></script>
+  <script src="./engine/assessment-schema.js"></script>
+  <script src="./engine/compliance-rules.js"></script>
+  <script src="./engine/rule-engine.js"></script>
+  <script src="./report/report-renderer.js"></script>
+  <script src="./report/report-persistence.js"></script>
+  <script src="./report/report-view-app.js"></script>
+</body>
+</html>

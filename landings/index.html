@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Niche use cases | CertPath UK/EU compliance triage</title>
+  <meta name="description" content="Segment-specific landing pages for Amazon electronics sellers, battery brands, white-label stores, and UK/EU importers—all route into the same CertPath assessment and expert support.">
+  <meta name="theme-color" content="#0f4c81">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'] },
+          colors: { brand: { 50: '#eef7ff', 500: '#0f7abf', 700: '#0f4c81', 900: '#0c2744' } },
+          boxShadow: { panel: '0 18px 60px rgba(15, 39, 68, 0.12)' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+  <!--
+    INFORMATION ARCHITECTURE (operator reference)
+    ───────────────────────────────────────────────
+    Goals: segment-specific acquisition URLs without forking the main SPA.
+    URL scheme: /landings/{slug}.html  (+ this index as /landings/index.html)
+    Each niche page is self-contained static HTML (Tailwind CDN, brand tokens).
+    Primary conversion: ../index.html#assessment (same wizard as main site).
+    Secondary: ../index.html#contact (expert / scoping). Tertiary: ../index.html#packages
+    Cross-links: methodology, disclaimer, privacy; optional link back to landings hub for SEO internal linking.
+    Future: add UTM params on ads → landings pages; consider JSON-LD WebPage + FAQ on each niche for rich results.
+  -->
+  <div class="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(14,116,214,0.12),_transparent_28%),linear-gradient(180deg,_#f8fbff_0%,_#f8fafc_100%)]">
+    <header class="border-b border-sky-100/80 bg-white/95 backdrop-blur">
+      <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+        <a href="../index.html#hero" class="flex items-center gap-3 text-slate-900 hover:text-brand-700">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-900 text-white shadow-md">
+            <i class="fa-solid fa-shield-heart"></i>
+          </div>
+          <div>
+            <div class="text-base font-black tracking-tight">CertPath</div>
+            <div class="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-700">Niche landing pages</div>
+          </div>
+        </a>
+        <div class="flex flex-wrap gap-2">
+          <a href="../index.html#assessment" class="rounded-full bg-brand-700 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-900">Main app · Assessment</a>
+          <a href="../index.html#packages" class="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:border-brand-500">Packages</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-5xl px-6 py-12 pb-20">
+      <h1 class="text-3xl font-black tracking-tight text-slate-950 md:text-4xl">Choose your scenario</h1>
+      <p class="mt-4 max-w-3xl text-sm leading-7 text-slate-600">These pages translate CertPath into <strong class="text-slate-800">segment-specific language</strong>. The product underneath is the same: structured intake, rule-based snapshot, optional AI explanation, and human support when you need it. Nothing here replaces legal advice, certification, or marketplace approval.</p>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        <a href="./amazon-electronics-sellers.html" class="group rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:border-brand-500 hover:shadow-panel">
+          <div class="text-[10px] font-black uppercase tracking-[0.2em] text-brand-700">Priority 1</div>
+          <h2 class="mt-2 text-xl font-black text-slate-950 group-hover:text-brand-700">Amazon electronics sellers</h2>
+          <p class="mt-2 text-sm text-slate-600">EMC, safety, listings, and supplier evidence under channel pressure.</p>
+          <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-brand-700">Open page <i class="fa-solid fa-arrow-right text-xs"></i></span>
+        </a>
+        <a href="./battery-charger-brands.html" class="group rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:border-brand-500 hover:shadow-panel">
+          <div class="text-[10px] font-black uppercase tracking-[0.2em] text-brand-700">Priority 2</div>
+          <h2 class="mt-2 text-xl font-black text-slate-950 group-hover:text-brand-700">Battery &amp; charger brands</h2>
+          <p class="mt-2 text-sm text-slate-600">Transport, labelling, and documentation intensity for cell-based products.</p>
+          <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-brand-700">Open page <i class="fa-solid fa-arrow-right text-xs"></i></span>
+        </a>
+        <a href="./white-label-ecommerce.html" class="group rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:border-brand-500 hover:shadow-panel">
+          <div class="text-[10px] font-black uppercase tracking-[0.2em] text-brand-700">Priority 3</div>
+          <h2 class="mt-2 text-xl font-black text-slate-950 group-hover:text-brand-700">White-label e-commerce</h2>
+          <p class="mt-2 text-sm text-slate-600">When the catalogue is fast-moving but conformity ownership is unclear.</p>
+          <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-brand-700">Open page <i class="fa-solid fa-arrow-right text-xs"></i></span>
+        </a>
+        <a href="./importers-resellers-uk-eu.html" class="group rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:border-brand-500 hover:shadow-panel">
+          <div class="text-[10px] font-black uppercase tracking-[0.2em] text-brand-700">Priority 4</div>
+          <h2 class="mt-2 text-xl font-black text-slate-950 group-hover:text-brand-700">Importers &amp; resellers · UK/EU</h2>
+          <p class="mt-2 text-sm text-slate-600">Economic operator role, supplier files, and listing alignment.</p>
+          <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-brand-700">Open page <i class="fa-solid fa-arrow-right text-xs"></i></span>
+        </a>
+      </div>
+
+      <p class="mt-12 text-center text-xs text-slate-500"><a href="../index.html#hero" class="font-semibold text-brand-700 hover:underline">CertPath home</a> · <a href="../methodology.html" class="hover:text-brand-700">Methodology</a> · <a href="../disclaimer.html" class="hover:text-brand-700">Disclaimer</a></p>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UK/EU compliance triage for Amazon electronics sellers | CertPath</title>
+  <meta name="description" content="First-pass conformity snapshot for Amazon electronics: likely documents, gaps, EMC and safety risk flags, and next steps—before you spend on labs or lawyers.">
+  <meta name="theme-color" content="#0f4c81">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'] },
+          colors: { brand: { 50: '#eef7ff', 500: '#0f7abf', 700: '#0f4c81', 900: '#0c2744' } },
+          boxShadow: { panel: '0 18px 60px rgba(15, 39, 68, 0.12)' }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+  <div class="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(14,116,214,0.12),_transparent_28%),linear-gradient(180deg,_#f8fbff_0%,_#f8fafc_100%)]">
+    <header class="sticky top-0 z-10 border-b border-sky-100/80 bg-white/95 backdrop-blur">
+      <div class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+        <a href="../index.html#hero" class="flex items-center gap-3 text-slate-900 hover:text-brand-700">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-900 text-white shadow-md">
+            <i class="fa-solid fa-shield-heart"></i>
+          </div>
+          <div>
+            <div class="text-base font-black tracking-tight">CertPath</div>
+            <div class="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-700">Amazon · Electronics</div>
+          </div>
+        </a>
+        <div class="flex flex-wrap gap-2">
+          <a href="./index.html" class="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 hover:border-brand-500">All niches</a>
+          <a href="../index.html#contact" class="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:border-brand-500">Expert support</a>
+          <a href="../index.html#assessment" class="rounded-full bg-brand-700 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-900">Run assessment</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-4xl px-6 py-10 pb-20">
+      <div class="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] text-brand-700">
+        <i class="fa-brands fa-amazon"></i> Marketplace electronics
+      </div>
+      <h1 class="mt-5 text-3xl font-black leading-tight tracking-tight text-slate-950 md:text-5xl">Ship electronics on Amazon into the UK or EU without flying blind on conformity evidence</h1>
+      <p class="mt-5 max-w-3xl text-lg leading-8 text-slate-600">CertPath gives you a <strong class="text-slate-800">structured first filter</strong> in minutes: what documentation themes are likely, what is probably missing, where risk concentrates, and what to do next—grounded in your answers and rule-based logic, not a generic blog checklist.</p>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <a href="../index.html#assessment" class="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-700 px-6 py-4 text-sm font-semibold text-white shadow-panel hover:bg-brand-900 sm:flex-none">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Run the instant check
+        </a>
+        <a href="../index.html#contact" class="inline-flex flex-1 items-center justify-center gap-2 rounded-full border-2 border-brand-700 bg-white px-6 py-4 text-sm font-semibold text-brand-700 hover:bg-sky-50 sm:flex-none">
+          <i class="fa-solid fa-user-tie"></i> Talk to us about Expert Review
+        </a>
+      </div>
+
+      <section class="mt-16" aria-labelledby="pain-heading">
+        <h2 id="pain-heading" class="text-xl font-black text-slate-900">Concrete pain points we hear from Amazon electronics sellers</h2>
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h3 class="font-bold text-slate-900">Supplier PDF roulette</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-600">A CE “certificate” arrives that does not clearly map to your exact model, voltage, or firmware—yet listings go live under time pressure.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h3 class="font-bold text-slate-900">Listing vs technical file drift</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-600">Marketing updates range, accessories, or plugs faster than the technical file and test scope keep up.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h3 class="font-bold text-slate-900">EMC and safety together</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-600">Anything with a battery, mains lead, or radio module triggers multiple documentation threads—easy to under-scope until a case opens.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h3 class="font-bold text-slate-900">Unclear economic operator story</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-600">You sell across EU and UK but addresses, importer lines, and responsible-person expectations differ by market and channel policy.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-16 rounded-[1.75rem] border border-sky-200 bg-white p-8 shadow-sm" aria-labelledby="why-heading">
+        <h2 id="why-heading" class="text-xl font-black text-slate-900">Why CertPath helps this segment</h2>
+        <ul class="mt-5 space-y-3 text-sm leading-7 text-slate-600">
+          <li class="flex gap-3"><i class="fa-solid fa-check mt-1 text-emerald-600" aria-hidden="true"></i><span><strong class="text-slate-800">Forces a consistent intake</strong> across channel, electrical risk, batteries, radio, markets, and documents—so you do not forget a dimension in the heat of a launch.</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-check mt-1 text-emerald-600" aria-hidden="true"></i><span><strong class="text-slate-800">Separates triage from storytelling:</strong> the rule engine produces authoritative lists; optional AI only explains them—reducing “model invented a new requirement” risk.</span></li>
+          <li class="flex gap-3"><i class="fa-solid fa-check mt-1 text-emerald-600" aria-hidden="true"></i><span><strong class="text-slate-800">Produces an artefact you can share internally</strong> (print/PDF from the app) to align ops, sourcing, and agencies before you spend on retesting.</span></li>
+        </ul>
+      </section>
+
+      <section class="mt-16" aria-labelledby="output-heading">
+        <h2 id="output-heading" class="text-xl font-black text-slate-900">What your output includes</h2>
+        <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50/80 p-6 text-sm leading-7 text-slate-600">
+          <ul class="list-disc space-y-2 pl-5">
+            <li><strong class="text-slate-800">Compliance snapshot</strong> aligned to your intake (likely themes, documents, gaps, risk flags, suggested next steps).</li>
+            <li><strong class="text-slate-800">Assumptions surfaced</strong> where you answered “not sure” or left fields incomplete—so you know what still needs human validation.</li>
+            <li><strong class="text-slate-800">Optional AI explanation layer</strong> when your deployment enables it—plain language only, constrained to the rule output.</li>
+          </ul>
+          <p class="mt-4 text-xs text-slate-500">CertPath does not issue certificates, approve listings, or replace notified bodies or test labs.</p>
+        </div>
+      </section>
+
+      <section class="mt-16" aria-labelledby="risks-heading">
+        <h2 id="risks-heading" class="text-xl font-black text-slate-900">Key risks for Amazon electronics sellers</h2>
+        <div class="mt-6 overflow-hidden rounded-2xl border border-amber-200 bg-amber-50/50">
+          <table class="w-full text-left text-sm text-slate-700">
+            <thead class="bg-amber-100/80 text-xs font-bold uppercase tracking-wider text-amber-950">
+              <tr><th class="px-4 py-3">Risk theme</th><th class="px-4 py-3">Why it bites</th></tr>
+            </thead>
+            <tbody class="divide-y divide-amber-100">
+              <tr><td class="px-4 py-3 font-semibold text-slate-900">Mis-scoped test evidence</td><td class="px-4 py-3">A report for a sibling SKU or different input voltage may not cover what you ship.</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-slate-900">Radio / RED blind spots</td><td class="px-4 py-3">Short-range modules still carry documentation and labelling expectations in EU/UK contexts.</td></tr>
+              <tr><td class="px-4 py-3 font-semibold text-slate-900">Post-market surveillance</td><td class="px-4 py-3">Returns and incident signals should feed conformity updates—many teams lack an owner.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="mt-16 rounded-2xl border border-brand-200 bg-brand-50/50 p-8 text-center" aria-label="Calls to action">
+        <p class="text-sm font-bold text-slate-900">Pick your next step</p>
+        <div class="mt-5 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+          <a href="../index.html#assessment" class="inline-flex items-center justify-center gap-2 rounded-full bg-brand-700 px-8 py-3.5 text-sm font-semibold text-white hover:bg-brand-900">
+            Start the assessment <i class="fa-solid fa-arrow-right"></i>
+          </a>
+          <a href="../index.html#packages" class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:border-brand-500">Compare Instant Check, Starter Pack &amp; Expert Review</a>
+        </div>
+        <a href="../index.html#contact" class="mt-4 inline-block text-sm font-semibold text-brand-800 hover:underline">Prefer a human triage call first? Contact the team.</a>
+      </section>
+
+      <section class="mt-16" aria-labelledby="faq-heading">
+        <h2 id="faq-heading" class="text-xl font-black text-slate-900">Short FAQ</h2>
+        <div class="mt-6 space-y-3">
+          <details class="group rounded-2xl border border-slate-200 bg-white p-5">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-bold text-slate-900">Does this guarantee my ASIN will pass Amazon compliance?<i class="fa-solid fa-plus text-brand-700 group-open:rotate-45"></i></summary>
+            <p class="mt-3 text-sm leading-6 text-slate-600">No. Amazon applies its own policies and checks. CertPath helps you prepare evidence and spot gaps earlier—it does not replace Amazon’s decisions.</p>
+          </details>
+          <details class="group rounded-2xl border border-slate-200 bg-white p-5">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-bold text-slate-900">Is this legal advice?<i class="fa-solid fa-plus text-brand-700 group-open:rotate-45"></i></summary>
+            <p class="mt-3 text-sm leading-6 text-slate-600">No. It is decision-support and triage. Use qualified counsel and conformity professionals where your risk or complexity warrants it.</p>
+          </details>
+          <details class="group rounded-2xl border border-slate-200 bg-white p-5">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-bold text-slate-900">How long does the intake take?<i class="fa-solid fa-plus text-brand-700 group-open:rotate-45"></i></summary>
+            <p class="mt-3 text-sm leading-6 text-slate-600">Most teams finish in a few minutes if product facts are at hand. Incomplete answers still produce a snapshot, but assumptions will be flagged.</p>
+          </details>
+          <details class="group rounded-2xl border border-slate-200 bg-white p-5">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-bold text-slate-900">What if we already have test reports?<i class="fa-solid fa-plus text-brand-700 group-open:rotate-45"></i></summary>
+            <p class="mt-3 text-sm leading-6 text-slate-600">Upload thinking still happens outside CertPath today—use the output to verify scope alignment between reports, listings, and packaging before you rely on them in surveillance.</p>
+          </details>
+        </div>
+      </section>
+
+      <aside class="mt-14 rounded-2xl border border-slate-200 bg-slate-100/80 p-6 text-xs leading-5 text-slate-600">
+        <strong class="text-slate-800">Trust disclaimer:</strong> CertPath provides preliminary, AI-assisted where enabled, <strong class="text-slate-800">first-pass</strong> guidance. It does not replace formal conformity assessment, accredited testing, notified bodies where required, or legal advice. Final obligations depend on your product, evidence, and applicable law. Read the <a href="../disclaimer.html" class="font-semibold text-brand-700 hover:underline">full disclaimer</a> and <a href="../methodology.html" class="font-semibold text-brand-700 hover:underline">methodology</a>.
+      </aside>
+
+      <p class="mt-8 text-center text-xs text-slate-500">
+        <a href="../resources/index.html" class="font-semibold text-brand-700 hover:underline">Resource library</a> · <a href="../privacy.html" class="hover:text-brand-700">Privacy</a>
+      </p>
+    </main>
+  </div>
+</body>
+</html>

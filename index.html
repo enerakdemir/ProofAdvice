@@ -3,9 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CertPath | UK/EU Certificate &amp; Compliance Advisor</title>
-  <meta name="description" content="See which certificates and conformity evidence your product is likely to need for the UK and EU, and what to obtain before you sell.">
+  <title>CertPath | UK/EU compliance snapshot &amp; evidence triage</title>
+  <meta name="description" content="Short product intake for UK/EU: a compliance snapshot of likely certificates and evidence gaps—preliminary guidance, not legal advice or certification.">
   <meta name="theme-color" content="#0f4c81">
+  <link rel="canonical" id="certpath-canonical" href="">
+  <meta name="robots" content="index,follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CertPath">
+  <meta property="og:title" id="meta-og-title" content="CertPath | UK/EU compliance snapshot &amp; evidence triage">
+  <meta property="og:description" id="meta-og-description" content="Short product intake for UK/EU: a compliance snapshot of likely certificates and evidence gaps—preliminary guidance, not legal advice or certification.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" id="meta-twitter-title" content="CertPath | UK/EU compliance snapshot &amp; evidence triage">
+  <meta name="twitter:description" id="meta-twitter-description" content="Short product intake for UK/EU: a compliance snapshot of likely certificates and evidence gaps—preliminary guidance, not legal advice or certification.">
+  <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <style>
+    #certpath-canonical { display: none; }
+    .certpath-skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      z-index: 100;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      background: #0f4c81;
+      color: #fff;
+      font-size: 0.875rem;
+      font-weight: 600;
+      box-shadow: 0 18px 60px rgba(15, 39, 68, 0.12);
+    }
+    .certpath-skip-link:focus {
+      left: 1rem;
+      top: 1rem;
+      outline: 2px solid #0f7abf;
+      outline-offset: 2px;
+    }
+    :where(a, button, input, select, textarea, summary):focus-visible {
+      outline: 2px solid #0f7abf;
+      outline-offset: 2px;
+    }
+    :where(a, button):focus:not(:focus-visible) {
+      outline: none;
+    }
+  </style>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -33,10 +75,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
+  <a href="#main-content" class="certpath-skip-link" data-i18n="a11y.skipToMain">Skip to main content</a>
   <div class="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(14,116,214,0.18),_transparent_28%),linear-gradient(180deg,_#f8fbff_0%,_#f8fafc_55%,_#ffffff_100%)]">
     <header class="sticky top-0 z-50 border-b border-sky-100/80 bg-white/90 backdrop-blur-lg">
-      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
-        <a href="#hero" data-section-link="home" class="flex items-center gap-3">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4">
+        <a href="#hero" data-section-link="home" class="flex min-w-0 items-center gap-2 sm:gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500" aria-label="CertPath home">
           <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-900 text-white shadow-panel">
             <i class="fa-solid fa-shield-heart text-lg"></i>
           </div>
@@ -47,13 +90,15 @@
         </a>
 
         <div class="hidden items-center gap-8 text-sm font-semibold text-slate-600 xl:flex">
-          <nav class="hidden items-center gap-8 lg:flex">
-            <a href="#assessment" data-section-link="assessment" class="hover:text-brand-700" data-i18n="nav.assessment">Assessment</a>
-            <a href="#playbooks" data-section-link="playbooks" class="hover:text-brand-700" data-i18n="nav.playbooks">Playbooks</a>
-            <a href="#packages" data-section-link="packages" class="hover:text-brand-700" data-i18n="nav.packages">Packages</a>
-            <a href="#resources" data-section-link="resources" class="hover:text-brand-700" data-i18n="nav.resources">Resources</a>
-            <a href="#faq" data-section-link="faq" class="hover:text-brand-700" data-i18n="nav.faq">FAQ</a>
-            <a href="#contact" data-section-link="contact" class="hover:text-brand-700" data-i18n="nav.contact">Contact</a>
+          <nav class="hidden items-center gap-8 lg:flex" aria-label="Primary" data-i18n-aria-label="nav.ariaPrimary">
+            <a href="#assessment" data-section-link="assessment" class="rounded-md px-1 py-0.5 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500" data-i18n="nav.assessment">Assessment</a>
+            <a href="#playbooks" data-section-link="playbooks" class="rounded-md px-1 py-0.5 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500" data-i18n="nav.playbooks">Playbooks</a>
+            <a href="#packages" data-section-link="packages" class="rounded-md px-1 py-0.5 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500" data-i18n="nav.packages">Packages</a>
+            <a href="#resources" data-section-link="resources" class="rounded-md px-1 py-0.5 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500" data-i18n="nav.resources">Resources</a>
+            <a href="#faq" data-section-link="faq" class="rounded-md px-1 py-0.5 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500" data-i18n="nav.faq">FAQ</a>
+            <a href="methodology.html" class="rounded-md px-1 py-0.5 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500" data-i18n="nav.howItWorks">How it works</a>
+            <a href="about.html" class="rounded-md px-1 py-0.5 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500" data-i18n="nav.aboutPage">About</a>
+            <a href="#contact" data-section-link="contact" class="rounded-md px-1 py-0.5 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500" data-i18n="nav.contact">Contact</a>
           </nav>
           <div class="min-w-[150px]">
             <div class="sr-only" data-i18n="language.label">Dil seçin</div>
@@ -66,15 +111,24 @@
             <div class="sr-only" data-i18n="language.label">Dil seçin</div>
             <div id="language-switcher-mobile" class="inline-flex rounded-full border border-slate-200 bg-white p-1 shadow-sm"></div>
           </div>
-          <a href="#assessment" data-section-link="assessment" class="rounded-full bg-brand-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-900">
+          <a href="#assessment" data-section-link="assessment" data-certpath-event="landing_page_cta_click" data-certpath-event-label="header_run_check" class="shrink-0 rounded-full bg-brand-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 sm:px-5">
             <span data-i18n="header.cta">Start Assessment</span>
           </a>
         </div>
       </div>
+      <nav class="border-t border-sky-100/70 bg-white/95 px-2 py-2 xl:hidden" data-i18n-aria-label="nav.ariaMobile" aria-label="Sections">
+        <div class="-mx-2 flex snap-x snap-mandatory gap-1 overflow-x-auto overscroll-x-contain px-2 pb-1 sm:mx-0 sm:justify-center sm:overflow-visible sm:pb-0">
+          <a href="#assessment" data-section-link="assessment" class="snap-start shrink-0 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:border-brand-500 hover:text-brand-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 sm:text-sm" data-i18n="nav.assessment">Assessment</a>
+          <a href="#packages" data-section-link="packages" class="snap-start shrink-0 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:border-brand-500 hover:text-brand-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 sm:text-sm" data-i18n="nav.packages">Packages</a>
+          <a href="#resources" data-section-link="resources" class="snap-start shrink-0 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:border-brand-500 hover:text-brand-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 sm:text-sm" data-i18n="nav.resources">Resources</a>
+          <a href="#contact" data-section-link="contact" class="snap-start shrink-0 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:border-brand-500 hover:text-brand-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 sm:text-sm" data-i18n="nav.contact">Contact</a>
+          <a href="#faq" data-section-link="faq" class="snap-start shrink-0 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:border-brand-500 hover:text-brand-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500 sm:text-sm" data-i18n="nav.faq">FAQ</a>
+        </div>
+      </nav>
     </header>
 
-    <main>
-      <section id="hero" data-home-panel="true" class="mx-auto max-w-7xl px-6 py-10 md:py-14">
+    <main id="main-content" tabindex="-1">
+      <section id="hero" data-home-panel="true" class="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-14">
         <div class="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
             <div class="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/90 px-4 py-2 text-sm font-semibold text-brand-700 shadow-sm">
@@ -87,12 +141,20 @@
             <p class="mt-5 max-w-3xl text-lg leading-8 text-slate-600" data-i18n="hero.description">
               CertPath helps companies and sellers map likely certificate and conformity needs for the UK and EU, see what to obtain, and get a practical checklist from a short product intake.
             </p>
+            <p class="mt-4 flex max-w-3xl flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-5 text-slate-500">
+              <span data-i18n="hero.trustTeaser">First-pass triage only—not legal advice or formal certification.</span>
+              <a href="disclaimer.html" class="font-semibold text-brand-700 hover:underline" data-i18n="hero.trustLinkDisclaimer">Disclaimer</a>
+              <span class="text-slate-300" aria-hidden="true">·</span>
+              <a href="methodology.html" class="font-semibold text-brand-700 hover:underline" data-i18n="hero.trustLinkMethodology">How it works</a>
+              <span class="text-slate-300" aria-hidden="true">·</span>
+              <a href="privacy.html" class="font-semibold text-brand-700 hover:underline" data-i18n="hero.trustLinkPrivacy">Privacy</a>
+            </p>
             <div class="mt-8 flex flex-col gap-4 sm:flex-row">
-              <a href="#assessment" data-section-link="assessment" class="inline-flex items-center justify-center gap-2 rounded-full bg-brand-700 px-7 py-4 text-base font-semibold text-white shadow-panel hover:bg-brand-900">
+              <a href="#assessment" data-section-link="assessment" data-certpath-event="landing_page_cta_click" data-certpath-event-label="hero_run_check" class="inline-flex items-center justify-center gap-2 rounded-full bg-brand-700 px-7 py-4 text-base font-semibold text-white shadow-panel hover:bg-brand-900">
                 <span data-i18n="hero.primaryCta">Run Product Check</span>
                 <i class="fa-solid fa-arrow-right"></i>
               </a>
-              <a href="#packages" data-section-link="packages" class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-7 py-4 text-base font-semibold text-slate-700 hover:border-sky-300 hover:text-brand-700">
+              <a href="#packages" data-section-link="packages" data-certpath-event="landing_page_cta_click" data-certpath-event-label="hero_view_packages" class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-7 py-4 text-base font-semibold text-slate-700 hover:border-sky-300 hover:text-brand-700">
                 <span data-i18n="hero.secondaryCta">View Service Packages</span>
               </a>
             </div>
@@ -136,12 +198,12 @@
         </div>
       </section>
 
-      <section id="assessment" data-section-panel="assessment" class="hidden mx-auto max-w-7xl px-6 py-10">
+      <section id="assessment" data-section-panel="assessment" class="hidden mx-auto max-w-7xl px-4 py-10 sm:px-6" aria-labelledby="assessment-heading">
         <div class="rounded-[2rem] border border-sky-100 bg-white/95 p-8 shadow-panel lg:p-10">
           <div class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
             <div>
               <div class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700" data-i18n="assessment.eyebrow">Compliance intake</div>
-              <h2 class="mt-4 text-3xl font-black tracking-tight text-slate-950 md:text-4xl" data-i18n="assessment.title">Answer a few product questions and get a decision-style compliance overview.</h2>
+              <h2 id="assessment-heading" class="mt-4 text-3xl font-black tracking-tight text-slate-950 md:text-4xl" data-i18n="assessment.title">Answer a few product questions and get a decision-style compliance overview.</h2>
               <p class="mt-4 text-base leading-7 text-slate-600" data-i18n="assessment.description">
                 This workflow is designed for technical products sold through Amazon, Shopify, Etsy, and similar channels into the UK and EU.
               </p>
@@ -154,105 +216,261 @@
             </div>
 
             <div>
-              <form id="assessment-form" class="grid gap-5 md:grid-cols-2">
-                <label class="md:col-span-1">
-                  <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.productName">1. Product name</span>
-                  <input id="product-name" type="text" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="assessment.placeholders.productName" placeholder="Enter product name">
-                </label>
-                <label class="md:col-span-1">
-                  <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.productUrl">2. Product link</span>
-                  <input id="product-url" type="url" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="assessment.placeholders.productUrl" placeholder="Amazon, Shopify or supplier URL">
-                </label>
-                <label class="md:col-span-1">
-                  <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.channel">3. Sales channel</span>
-                  <select id="sales-channel" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100"></select>
-                </label>
-                <label class="md:col-span-1">
-                  <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.category">4. Product category</span>
-                  <select id="product-category" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100"></select>
-                </label>
-                <label class="md:col-span-1">
-                  <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.role">5. Seller role</span>
-                  <select id="seller-role" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100"></select>
-                </label>
-                <label class="md:col-span-1">
-                  <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.ceStatus">6. CE / supplier compliance status</span>
-                  <select id="ce-status" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100"></select>
-                </label>
+              <div id="wizard-progress-wrap" class="mb-6 lg:mb-8" role="region" aria-labelledby="wizard-progress-label">
+                <p id="wizard-progress-label" class="sr-only" data-i18n="wizard.progressLabel">Assessment progress</p>
+                <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
+                  <span id="wizard-step-indicator" class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500" aria-hidden="true"></span>
+                  <span id="wizard-step-heading" class="text-xs font-bold uppercase tracking-[0.2em] text-brand-700" aria-hidden="true"></span>
+                </div>
+                <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
+                  <div id="wizard-progress-bar" class="h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-700 transition-all duration-300 ease-out" style="width: 20%"></div>
+                </div>
+                <p id="wizard-step-hint" class="mt-3 text-xs leading-5 text-slate-500"></p>
+                <p id="wizard-live-region" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+              </div>
 
-                <fieldset>
-                  <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.electrical">7. Is the product electrical?</legend>
-                  <div id="electrical-container" class="grid gap-3"></div>
-                </fieldset>
-                <fieldset>
-                  <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.battery">8. Does it contain a battery?</legend>
-                  <div id="battery-container" class="grid gap-3"></div>
-                </fieldset>
-                <fieldset>
-                  <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.wireless">9. Does it use wireless connectivity?</legend>
-                  <div id="wireless-container" class="grid gap-3"></div>
-                </fieldset>
-                <fieldset>
-                  <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.skinContact">10. Does it contact skin or the body?</legend>
-                  <div id="skin-contact-container" class="grid gap-3"></div>
-                </fieldset>
-                <fieldset class="md:col-span-2">
-                  <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.children">11. Is it intended for children?</legend>
-                  <div id="children-container" class="grid gap-3 md:grid-cols-3"></div>
-                </fieldset>
-                <fieldset class="md:col-span-2">
-                  <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.markets">12. Which markets do you want to sell in?</legend>
-                  <div id="markets-container" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3"></div>
-                </fieldset>
-                <fieldset class="md:col-span-2">
-                  <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.documents">13. Which documents do you already have?</legend>
-                  <div id="documents-container" class="grid gap-3 sm:grid-cols-2"></div>
-                </fieldset>
+              <div id="wizard-validation-banner" class="mb-4 hidden rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"></div>
+
+              <form id="assessment-form" class="grid gap-5 md:grid-cols-2">
+                <div data-wizard-step="1" class="wizard-step-contents contents">
+                  <label class="md:col-span-1">
+                    <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.productName">Product name</span>
+                    <input id="product-name" type="text" autocomplete="off" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="assessment.placeholders.productName" placeholder="">
+                    <p class="mt-2 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.productName"></p>
+                  </label>
+                  <label class="md:col-span-1">
+                    <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.productUrl">Product link</span>
+                    <input id="product-url" type="url" inputmode="url" autocomplete="off" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="assessment.placeholders.productUrl" placeholder="">
+                    <p class="mt-2 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.productUrl"></p>
+                  </label>
+                </div>
+
+                <div data-wizard-step="2" class="wizard-step-contents hidden md:col-span-2 grid gap-5 md:grid-cols-2">
+                  <label class="md:col-span-1">
+                    <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.channel">Sales channel</span>
+                    <select id="sales-channel" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100"></select>
+                    <p class="mt-2 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.channel"></p>
+                  </label>
+                  <label class="md:col-span-1">
+                    <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.category">Product category</span>
+                    <select id="product-category" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100"></select>
+                    <p class="mt-2 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.category"></p>
+                  </label>
+                  <label class="md:col-span-1">
+                    <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.role">Seller role</span>
+                    <select id="seller-role" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100"></select>
+                    <p class="mt-2 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.role"></p>
+                  </label>
+                  <label class="md:col-span-1">
+                    <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.ceStatus">CE / supplier compliance status</span>
+                    <select id="ce-status" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100"></select>
+                    <p class="mt-2 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.ceStatus"></p>
+                  </label>
+                </div>
+
+                <div data-wizard-step="3" class="wizard-step-contents hidden md:col-span-2 grid gap-5 md:grid-cols-2">
+                  <fieldset class="md:col-span-2">
+                    <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.electrical">Is the product electrical?</legend>
+                    <p class="mb-3 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.electrical"></p>
+                    <div id="electrical-container" class="grid gap-3 md:grid-cols-3"></div>
+                  </fieldset>
+                  <div id="electrical-context-panel" class="hidden md:col-span-2 rounded-2xl border border-sky-200 bg-sky-50/90 p-4 text-sm leading-6 text-slate-700">
+                    <div class="text-xs font-bold uppercase tracking-[0.15em] text-brand-700" data-i18n="assessment.branch.electricalEyebrow"></div>
+                    <p class="mt-2" data-i18n="assessment.branch.electricalBody"></p>
+                    <fieldset class="mt-4">
+                      <legend class="mb-2 block text-xs font-semibold text-slate-800" data-i18n="assessment.fields.electricalPower"></legend>
+                      <div id="electrical-power-container" class="grid gap-3 md:grid-cols-2"></div>
+                    </fieldset>
+                  </div>
+
+                  <fieldset class="md:col-span-2">
+                    <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.battery">Does it contain a battery?</legend>
+                    <p class="mb-3 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.battery"></p>
+                    <div id="battery-container" class="grid gap-3 md:grid-cols-3"></div>
+                  </fieldset>
+                  <div id="battery-followup-panel" class="hidden md:col-span-2 grid gap-5 md:grid-cols-2 rounded-2xl border border-amber-200/80 bg-amber-50/50 p-4 md:p-5">
+                    <fieldset>
+                      <legend class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.batteryRemovable"></legend>
+                      <p class="mb-3 text-xs text-slate-600" data-i18n="assessment.helpers.batteryRemovable"></p>
+                      <div id="battery-removable-container" class="grid gap-3"></div>
+                    </fieldset>
+                    <fieldset>
+                      <legend class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.batteryChemistry"></legend>
+                      <p class="mb-3 text-xs text-slate-600" data-i18n="assessment.helpers.batteryChemistry"></p>
+                      <div id="battery-chemistry-container" class="grid gap-3"></div>
+                    </fieldset>
+                  </div>
+
+                  <fieldset class="md:col-span-2">
+                    <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.wireless">Does it use wireless connectivity?</legend>
+                    <p class="mb-3 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.wireless"></p>
+                    <div id="wireless-container" class="grid gap-3 md:grid-cols-3"></div>
+                  </fieldset>
+                  <div id="wireless-context-panel" class="hidden md:col-span-2 rounded-2xl border border-violet-200 bg-violet-50/60 p-4 text-sm leading-6 text-slate-700">
+                    <div class="text-xs font-bold uppercase tracking-[0.15em] text-violet-800" data-i18n="assessment.branch.wirelessEyebrow"></div>
+                    <p class="mt-2" data-i18n="assessment.branch.wirelessBody"></p>
+                    <fieldset class="mt-4">
+                      <legend class="mb-2 block text-xs font-semibold text-slate-800" data-i18n="assessment.fields.wirelessTech"></legend>
+                      <div id="wireless-tech-container" class="grid gap-3 md:grid-cols-2 lg:grid-cols-3"></div>
+                    </fieldset>
+                  </div>
+
+                  <fieldset class="md:col-span-2">
+                    <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.skinContact">Does it contact skin or the body?</legend>
+                    <p class="mb-3 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.skinContact"></p>
+                    <div id="skin-contact-container" class="grid gap-3 md:grid-cols-3"></div>
+                  </fieldset>
+                  <div id="skin-contact-note-panel" class="hidden md:col-span-2 rounded-2xl border border-rose-200 bg-rose-50/70 p-4 text-sm leading-6 text-rose-950">
+                    <div class="text-xs font-bold uppercase tracking-[0.15em] text-rose-800" data-i18n="assessment.branch.skinEyebrow"></div>
+                    <p class="mt-2" data-i18n="assessment.branch.skinBody"></p>
+                  </div>
+
+                  <fieldset class="md:col-span-2">
+                    <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.children">Is it intended for children?</legend>
+                    <p class="mb-3 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.children"></p>
+                    <div id="children-container" class="grid gap-3 md:grid-cols-3"></div>
+                  </fieldset>
+                  <div id="children-warning-panel" class="hidden md:col-span-2 rounded-2xl border-2 border-amber-400 bg-amber-100/80 p-4 text-sm leading-6 text-amber-950 shadow-sm">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <i class="fa-solid fa-triangle-exclamation text-amber-700"></i>
+                      <span class="text-xs font-black uppercase tracking-[0.12em] text-amber-900" data-i18n="assessment.branch.childrenWarningTitle"></span>
+                    </div>
+                    <p class="mt-2 font-medium" data-i18n="assessment.branch.childrenWarningBody"></p>
+                    <fieldset class="mt-4">
+                      <legend class="mb-2 block text-xs font-semibold text-slate-900" data-i18n="assessment.fields.childAgeFocus"></legend>
+                      <div id="child-age-container" class="grid gap-3 md:grid-cols-2"></div>
+                    </fieldset>
+                  </div>
+                </div>
+
+                <div data-wizard-step="4" class="wizard-step-contents hidden md:col-span-2 grid gap-5 md:grid-cols-2">
+                  <fieldset class="md:col-span-2">
+                    <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.markets">Which markets do you want to sell in?</legend>
+                    <p class="mb-3 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.markets"></p>
+                    <div id="markets-container" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3"></div>
+                  </fieldset>
+                  <fieldset class="md:col-span-2">
+                    <legend class="mb-3 block text-sm font-semibold text-slate-800" data-i18n="assessment.fields.documents">Which documents do you already have?</legend>
+                    <p class="mb-3 text-xs leading-5 text-slate-500" data-i18n="assessment.helpers.documents"></p>
+                    <div id="documents-container" class="grid gap-3 sm:grid-cols-2"></div>
+                  </fieldset>
+                </div>
+
+                <div data-wizard-step="5" class="wizard-step-contents hidden md:col-span-2">
+                  <div class="rounded-[1.5rem] border border-slate-200 bg-slate-50/80 p-5 md:p-6">
+                    <div class="text-sm font-semibold uppercase tracking-[0.2em] text-brand-700" data-i18n="assessment.reviewEyebrow"></div>
+                    <h3 class="mt-2 text-xl font-black text-slate-950" data-i18n="assessment.reviewTitle"></h3>
+                    <p class="mt-2 text-sm leading-6 text-slate-600" data-i18n="assessment.reviewDescription"></p>
+                    <dl id="wizard-review-summary" class="mt-6 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white"></dl>
+                  </div>
+                </div>
               </form>
 
-              <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-                <button id="find-button" type="button" class="inline-flex items-center justify-center gap-2 rounded-full bg-brand-700 px-7 py-3 text-sm font-semibold text-white hover:bg-brand-900">
-                  <i class="fa-solid fa-chart-column"></i>
-                  <span data-i18n="assessment.findButton">Build Compliance Overview</span>
+              <div id="wizard-nav" class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+                <button type="button" id="wizard-back-button" class="order-2 inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:border-sky-300 hover:text-brand-700 sm:order-1">
+                  <i class="fa-solid fa-arrow-left"></i>
+                  <span data-i18n="assessment.wizardBack">Back</span>
                 </button>
-                <button id="reset-button" type="button" class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-7 py-3 text-sm font-semibold text-slate-700 hover:border-sky-300 hover:text-brand-700">
+                <button type="button" id="wizard-next-button" class="order-1 inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-700 px-7 py-3 text-sm font-semibold text-white shadow-panel hover:bg-brand-900 sm:order-2 sm:flex-none">
+                  <span data-i18n="assessment.wizardNext">Next step</span>
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <button type="button" id="find-button" style="display: none" class="order-1 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-brand-700 to-brand-900 px-8 py-4 text-base font-bold text-white shadow-panel ring-2 ring-brand-500/25 hover:from-brand-900 hover:to-brand-900 sm:order-2 sm:w-auto">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i>
+                  <span data-i18n="assessment.findButton">Generate snapshot</span>
+                </button>
+                <button type="button" id="reset-button" class="order-3 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-600 hover:border-rose-200 hover:text-rose-700 sm:ml-auto">
                   <span data-i18n="assessment.resetButton">Reset</span>
                 </button>
               </div>
 
-              <div class="mt-6 rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
-                <div class="text-sm font-semibold uppercase tracking-[0.2em] text-brand-700" data-i18n="assessment.aiTestEyebrow">AI test mode</div>
-                <p class="mt-3 text-sm leading-6 text-slate-600" data-i18n="assessment.aiTestBody">
-                  For testing only, you can enter a Gemini API key here. It stays in this browser and is not committed to the repo.
-                </p>
-                <div class="mt-4 flex flex-col gap-3 md:flex-row">
-                  <input id="gemini-api-key" type="password" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="assessment.placeholders.geminiApiKey" placeholder="Enter Gemini API key for local testing">
-                  <button id="save-api-key-button" type="button" class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:border-sky-300 hover:text-brand-700" data-i18n="assessment.saveApiKey">Save key</button>
-                  <button id="clear-api-key-button" type="button" class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:border-rose-300 hover:text-rose-700" data-i18n="assessment.clearApiKey">Clear key</button>
+              <details id="ai-browser-demo-panel" class="group mt-6 rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5 open:border-sky-200 open:bg-sky-50/40">
+                <summary class="cursor-pointer list-none text-sm font-semibold uppercase tracking-[0.2em] text-brand-700 marker:hidden [&::-webkit-details-marker]:hidden">
+                  <span class="inline-flex items-center gap-2">
+                    <i class="fa-solid fa-chevron-right text-xs transition group-open:rotate-90"></i>
+                    <span data-i18n="assessment.aiTestToggle">Advanced: browser-only API key (testing)</span>
+                  </span>
+                </summary>
+                <div class="mt-4 border-t border-slate-200/80 pt-4">
+                  <div class="text-sm font-semibold uppercase tracking-[0.2em] text-brand-700" data-i18n="assessment.aiTestEyebrow">AI test mode</div>
+                  <p class="mt-3 text-sm leading-6 text-slate-600" data-i18n="assessment.aiTestBody">
+                    For testing only, you can enter a Gemini API key here. It stays in this browser and is not committed to the repo.
+                  </p>
+                  <p class="mt-3 text-xs leading-5 text-slate-600" data-i18n="assessment.aiTestWorkerNote"></p>
+                  <div class="mt-4 flex flex-col gap-3 md:flex-row">
+                    <input id="gemini-api-key" type="password" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="assessment.placeholders.geminiApiKey" placeholder="Enter Gemini API key for local testing">
+                    <button id="save-api-key-button" type="button" class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:border-sky-300 hover:text-brand-700" data-i18n="assessment.saveApiKey">Save key</button>
+                    <button id="clear-api-key-button" type="button" class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:border-rose-300 hover:text-rose-700" data-i18n="assessment.clearApiKey">Clear key</button>
+                  </div>
+                  <div id="api-key-status" class="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500"></div>
                 </div>
-                <div id="api-key-status" class="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500"></div>
-              </div>
+              </details>
             </div>
           </div>
 
-            <div class="mt-10 rounded-[1.75rem] border border-dashed border-sky-200 bg-sky-50/60 p-6">
+            <div class="mt-10 rounded-[1.75rem] border border-dashed border-sky-200 bg-sky-50/60 p-4 sm:p-6">
             <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <div class="text-lg font-bold text-slate-900" data-i18n="results.reportTitle">Compliance report area</div>
-                <div class="mt-2 text-sm leading-6 text-slate-600" data-i18n="results.reportDescription">Your likely documents, regulations, missing items, risks, and next steps will appear here.</div>
+                <h3 class="text-lg font-bold text-slate-900" data-i18n="results.reportTitle">Compliance triage report</h3>
+                <p class="mt-2 text-sm leading-6 text-slate-600" data-i18n="results.reportDescription">Structured snapshot for internal triage and expert handoff — scan in under a minute.</p>
               </div>
               <div id="saved-status" class="rounded-full bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-700">Waiting for local save</div>
             </div>
             <div id="analysis-status" class="mt-4 hidden rounded-2xl border border-sky-200 bg-white px-4 py-3 text-sm text-slate-600"></div>
-            <div id="summary-grid" class="mt-6 grid gap-6 lg:grid-cols-3"></div>
-            <div id="result-grid" class="mt-6 grid gap-6 xl:grid-cols-2"></div>
-            <div id="next-actions" class="mt-6 grid gap-4 md:grid-cols-3"></div>
+            <div id="expert-handoff-banner" class="no-print mt-6 hidden rounded-[1.5rem] border-2 border-brand-500/25 bg-gradient-to-br from-white via-sky-50/80 to-white p-5 shadow-sm ring-1 ring-sky-100/80 sm:p-6">
+              <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                <div class="min-w-0 flex-1">
+                  <p class="text-[10px] font-black uppercase tracking-[0.22em] text-brand-700" data-i18n="results.report.expertHandoffEyebrow">Expert handoff</p>
+                  <p class="mt-2 text-lg font-black tracking-tight text-slate-950" data-i18n="results.report.expertHandoffTitle">Turn this snapshot into a scoped support response</p>
+                  <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600" data-i18n="results.report.expertHandoffBody">Share the same context with our team—product class, markets, and document gaps—so the first reply is useful, not generic.</p>
+                </div>
+                <div class="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-center">
+              <button type="button" id="report-btn-expert-banner" class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-700 px-6 py-3.5 text-sm font-semibold text-white shadow-panel hover:bg-brand-900 sm:w-auto" data-i18n-aria-label="results.report.expertHandoffCta">
+                <i class="fa-solid fa-user-tie" aria-hidden="true"></i>
+                <span data-i18n="results.report.expertHandoffCta">Open support request</span>
+              </button>
+                </div>
+              </div>
+            </div>
+            <div id="report-toolbar" class="no-print mt-6 hidden flex flex-wrap items-center gap-2 border-b border-sky-100 pb-4">
+              <button type="button" id="report-btn-pdf" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm hover:border-brand-500 hover:text-brand-800" data-i18n-aria-label="results.report.toolbarPdf">
+                <i class="fa-solid fa-file-pdf text-rose-600" aria-hidden="true"></i>
+                <span data-i18n="results.report.toolbarPdf">Download PDF</span>
+              </button>
+              <button type="button" id="report-btn-email" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm hover:border-brand-500 hover:text-brand-800" data-i18n-aria-label="results.report.toolbarEmail">
+                <i class="fa-solid fa-envelope text-brand-600" aria-hidden="true"></i>
+                <span data-i18n="results.report.toolbarEmail">Email report</span>
+              </button>
+              <button type="button" id="report-btn-save" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm hover:border-emerald-400 hover:text-emerald-800" data-i18n-aria-label="results.report.toolbarSave">
+                <i class="fa-solid fa-floppy-disk text-emerald-600" aria-hidden="true"></i>
+                <span data-i18n="results.report.toolbarSave">Save report</span>
+              </button>
+              <button type="button" id="report-btn-share" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm hover:border-sky-400 hover:text-brand-800" data-i18n-aria-label="results.report.toolbarShare">
+                <i class="fa-solid fa-link text-sky-600" aria-hidden="true"></i>
+                <span data-i18n="results.report.toolbarShare">Copy share link</span>
+              </button>
+              <button type="button" id="report-btn-expert" class="inline-flex items-center gap-2 rounded-full border-2 border-brand-600 bg-white px-4 py-2.5 text-xs font-semibold text-brand-800 shadow-sm hover:bg-sky-50" data-i18n-aria-label="results.report.toolbarExpert">
+                <i class="fa-solid fa-user-tie" aria-hidden="true"></i>
+                <span data-i18n="results.report.toolbarExpert">Request expert support</span>
+              </button>
+              <button type="button" id="report-btn-edit" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm hover:border-sky-300 hover:text-brand-700" data-i18n-aria-label="results.report.toolbarEdit">
+                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                <span data-i18n="results.report.toolbarEdit">Edit answers</span>
+              </button>
+            </div>
+            <div id="report-toast" class="no-print pointer-events-none fixed bottom-6 left-1/2 z-[300] hidden -translate-x-1/2 rounded-full border border-slate-200 bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-opacity duration-300" role="status"></div>
+            <div id="report-history-panel" class="no-print mt-4 hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <h3 class="text-sm font-black text-slate-900" data-i18n="results.report.historyTitle">Saved snapshots</h3>
+              <p class="mt-1 text-xs leading-5 text-slate-500" data-i18n="results.report.historyHint">Stored in this browser only. Production would sync to your account.</p>
+              <ul id="report-history-list" class="mt-3 divide-y divide-slate-100"></ul>
+            </div>
+            <div id="compliance-report-body" class="mt-6 space-y-6 print:mt-0 print:space-y-4"></div>
           </div>
         </div>
       </section>
 
-      <section id="playbooks" data-section-panel="playbooks" class="hidden mx-auto max-w-7xl px-6 py-10">
-        <div class="rounded-[2rem] bg-slate-950 px-8 py-10 text-white shadow-panel">
+      <section id="playbooks" data-section-panel="playbooks" class="hidden mx-auto max-w-7xl px-4 py-10 sm:px-6">
+        <div class="rounded-[2rem] bg-slate-950 px-5 py-8 text-white shadow-panel sm:px-8 sm:py-10">
           <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <div class="text-sm font-semibold uppercase tracking-[0.25em] text-sky-300" data-i18n="playbooks.eyebrow">Go-to-market playbooks</div>
@@ -264,30 +482,68 @@
         </div>
       </section>
 
-      <section id="packages" data-section-panel="packages" class="hidden mx-auto max-w-7xl px-6 py-10">
-        <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <div class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700" data-i18n="packages.eyebrow">Service packages</div>
-            <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950" data-i18n="packages.title">Start with a check, then move into draft support if needed</h2>
+      <section id="packages" data-section-panel="packages" class="hidden mx-auto max-w-7xl px-4 py-10 sm:px-6">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div class="max-w-2xl">
+            <div class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700" data-i18n="packages.eyebrow">Support tiers</div>
+            <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950" data-i18n="packages.title">Three clear steps: triage, starter pack, expert review</h2>
+            <p class="mt-3 text-sm leading-6 text-slate-600" data-i18n="packages.lead">Run the automated check first. Add templates and prep guidance when you are ready to assemble files. Bring in experts when risk or complexity warrants it.</p>
           </div>
-          <p class="max-w-2xl text-sm leading-6 text-slate-600" data-i18n="packages.description">The site can act as both a decision engine and a lead-generation layer for compliance support.</p>
+          <p class="max-w-md text-sm leading-6 text-slate-600 md:text-right" data-i18n="packages.description">Pricing is indicative and confirmed after scope—not a substitute for formal quotes where procurement rules apply.</p>
         </div>
-        <div id="package-grid" class="mt-8 grid gap-6 lg:grid-cols-3"></div>
+        <div id="package-grid" class="mt-10 grid gap-8 lg:grid-cols-3 lg:items-stretch"></div>
+        <div class="mx-auto mt-10 max-w-3xl rounded-2xl border border-sky-200 bg-sky-50/50 px-5 py-4 text-center">
+          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand-700" data-i18n="packages.footEyebrow">Not sure which tier?</p>
+          <p class="mt-2 text-sm leading-6 text-slate-700" data-i18n="packages.footCompare">Tell us your product type and channel—we will suggest where to start. No obligation.</p>
+          <div class="mt-4 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap">
+            <a href="#contact" data-section-link="contact" class="inline-flex items-center justify-center gap-2 rounded-full border border-brand-700 bg-white px-5 py-2.5 text-xs font-semibold text-brand-700 hover:bg-white/80">
+              <i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i>
+              <span data-i18n="packages.footCta">Ask which tier fits</span>
+            </a>
+            <a href="#contact" data-section-link="contact" data-package-interest="footerExpert" class="inline-flex items-center justify-center gap-2 rounded-full bg-brand-700 px-5 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-brand-900">
+              <i class="fa-solid fa-user-tie" aria-hidden="true"></i>
+              <span data-i18n="packages.footExpertCta">Talk to support about scope</span>
+            </a>
+          </div>
+        </div>
+        <p class="mx-auto mt-6 max-w-2xl text-center text-xs leading-5 text-slate-500" data-i18n="packages.footTrust">CertPath is decision support, not legal advice or certification. Final obligations depend on your product, evidence, and applicable law.</p>
       </section>
 
-      <section id="resources" data-section-panel="resources" class="hidden mx-auto max-w-7xl px-6 py-10">
-        <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <div class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700" data-i18n="resources.eyebrow">Resources</div>
-            <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950" data-i18n="resources.title">Seller-friendly guidance content that supports the intake flow</h2>
+      <section id="resources" data-section-panel="resources" class="hidden mx-auto max-w-7xl px-4 py-10 sm:px-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div class="max-w-3xl">
+            <div class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700" data-i18n="resources.eyebrow">Resource library</div>
+            <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950" data-i18n="resources.title">Practical UK/EU compliance content for e-commerce sellers</h2>
+            <p class="mt-3 text-sm leading-6 text-slate-600" data-i18n="resources.lead">Use these guides before or after your CertPath snapshot. They are triage aids—not legal advice or certification decisions.</p>
           </div>
-          <p class="max-w-2xl text-sm leading-6 text-slate-600" data-i18n="resources.description">These content blocks reinforce positioning: simple, practical, and product-specific.</p>
+          <div class="flex shrink-0 flex-col items-start gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-end">
+            <a href="resources/index.html" class="inline-flex items-center gap-2 rounded-full border border-brand-700 bg-white px-5 py-2.5 text-sm font-semibold text-brand-700 shadow-sm hover:bg-sky-50">
+              <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+              <span data-i18n="resources.hubLink">Open full library (SEO pages)</span>
+            </a>
+            <p class="max-w-xs text-xs leading-5 text-slate-500 lg:text-right" data-i18n="resources.description">Checklists, templates, playbooks, and a glossary—each opens as a dedicated page you can bookmark or share.</p>
+          </div>
         </div>
-        <div id="resource-grid" class="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-4"></div>
+        <div id="resource-grid" class="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3"></div>
+        <div class="mx-auto mt-10 max-w-3xl rounded-2xl border border-sky-200 bg-sky-50/60 px-5 py-5 text-center">
+          <p class="text-sm font-semibold text-slate-800" data-i18n="resources.bottomCtaTitle">Ready to see how this applies to your SKU?</p>
+          <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
+            <a href="#assessment" data-section-link="assessment" class="inline-flex items-center gap-2 rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-900">
+              <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+              <span data-i18n="resources.bottomCtaCheck">Run instant check</span>
+            </a>
+            <a href="#packages" data-section-link="packages" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:border-brand-500 hover:text-brand-800">
+              <span data-i18n="resources.bottomCtaPackages">Compare support tiers</span>
+            </a>
+            <a href="#contact" data-section-link="contact" class="text-sm font-semibold text-brand-700 hover:underline">
+              <span data-i18n="resources.bottomCtaContact">Ask a scoping question</span>
+            </a>
+          </div>
+        </div>
       </section>
 
-      <section id="faq" data-section-panel="faq" class="hidden mx-auto max-w-7xl px-6 py-10">
-        <div class="rounded-[2rem] border border-sky-100 bg-white p-8 shadow-panel">
+      <section id="faq" data-section-panel="faq" class="hidden mx-auto max-w-7xl px-4 py-10 sm:px-6">
+        <div class="rounded-[2rem] border border-sky-100 bg-white p-6 shadow-panel sm:p-8">
           <div>
             <div class="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700" data-i18n="faq.eyebrow">FAQ</div>
             <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950" data-i18n="faq.title">Questions small sellers ask before spending on compliance</h2>
@@ -296,45 +552,105 @@
         </div>
       </section>
 
-      <section id="contact" data-section-panel="contact" class="hidden mx-auto max-w-7xl px-6 py-10 pb-20">
-        <div class="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <div class="rounded-[2rem] bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-white shadow-panel">
-            <div class="text-sm font-semibold uppercase tracking-[0.25em] text-sky-200" data-i18n="contact.eyebrow">Human-in-the-loop support</div>
-            <h2 class="mt-4 text-3xl font-black tracking-tight" data-i18n="contact.title">Use the report as your first filter, then bring in support for draft packs and prep.</h2>
-            <p class="mt-4 text-sm leading-7 text-sky-50/90" data-i18n="contact.description">This matches the strongest market pattern: AI speeds up decisions, but trust is built when expert support is available for the final pack.</p>
-            <ul class="mt-6 space-y-3 text-sm text-sky-50/90">
-              <li class="flex items-start gap-3"><i class="fa-solid fa-check mt-1"></i><span data-i18n="contact.bullet1">Product-specific document review</span></li>
-              <li class="flex items-start gap-3"><i class="fa-solid fa-check mt-1"></i><span data-i18n="contact.bullet2">Starter pack drafting support</span></li>
-              <li class="flex items-start gap-3"><i class="fa-solid fa-check mt-1"></i><span data-i18n="contact.bullet3">Amazon listing readiness guidance</span></li>
-            </ul>
+      <section id="contact" data-section-panel="contact" class="hidden mx-auto max-w-7xl px-4 py-10 pb-16 sm:px-6 sm:pb-20">
+        <div class="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+          <div class="flex flex-col gap-6">
+            <div class="rounded-[2rem] bg-gradient-to-br from-brand-700 to-brand-900 p-8 text-white shadow-panel">
+              <div class="text-sm font-semibold uppercase tracking-[0.25em] text-sky-200" data-i18n="contact.eyebrow">Human-in-the-loop support</div>
+              <h2 class="mt-4 text-3xl font-black tracking-tight" data-i18n="contact.title">After the instant check, we help you choose Starter Pack or Expert Review.</h2>
+              <p class="mt-4 text-sm leading-7 text-sky-50/90" data-i18n="contact.description">Share your product and channel. We confirm scope, timeline, and pricing—without pressure.</p>
+              <div class="mt-6 grid gap-3 sm:grid-cols-3">
+                <div class="rounded-2xl border border-white/15 bg-white/10 p-4">
+                  <div class="text-[10px] font-black uppercase tracking-[0.18em] text-sky-200" data-i18n="contact.reasons.r1Eyebrow">Clarify scope</div>
+                  <p class="mt-2 text-sm font-bold leading-snug" data-i18n="contact.reasons.r1Title">Interpret the snapshot for your SKU</p>
+                  <p class="mt-2 text-xs leading-5 text-sky-100/90" data-i18n="contact.reasons.r1Body">Connect rule-engine output to your real packaging, supplier pack, and channel rules.</p>
+                </div>
+                <div class="rounded-2xl border border-white/15 bg-white/10 p-4">
+                  <div class="text-[10px] font-black uppercase tracking-[0.18em] text-sky-200" data-i18n="contact.reasons.r2Eyebrow">Close gaps</div>
+                  <p class="mt-2 text-sm font-bold leading-snug" data-i18n="contact.reasons.r2Title">Prioritise missing documents</p>
+                  <p class="mt-2 text-xs leading-5 text-sky-100/90" data-i18n="contact.reasons.r2Body">Decide what to obtain first from labs, suppliers, or internal QA before you list or ship.</p>
+                </div>
+                <div class="rounded-2xl border border-white/15 bg-white/10 p-4">
+                  <div class="text-[10px] font-black uppercase tracking-[0.18em] text-sky-200" data-i18n="contact.reasons.r3Eyebrow">Go live safely</div>
+                  <p class="mt-2 text-sm font-bold leading-snug" data-i18n="contact.reasons.r3Title">Listing and handoff readiness</p>
+                  <p class="mt-2 text-xs leading-5 text-sky-100/90" data-i18n="contact.reasons.r3Body">Align evidence, warnings, and traceability with what marketplaces and logistics partners expect.</p>
+                </div>
+              </div>
+              <ul class="mt-6 space-y-3 border-t border-white/20 pt-6 text-sm text-sky-50/90">
+                <li class="flex items-start gap-3"><i class="fa-solid fa-shield-halved mt-0.5 shrink-0 text-sky-200" aria-hidden="true"></i><span data-i18n="contact.bullet1">Structured review against your CertPath snapshot and files</span></li>
+                <li class="flex items-start gap-3"><i class="fa-solid fa-file-lines mt-0.5 shrink-0 text-sky-200" aria-hidden="true"></i><span data-i18n="contact.bullet2">Starter Pack templates and draft-prep guidance</span></li>
+                <li class="flex items-start gap-3"><i class="fa-solid fa-store mt-0.5 shrink-0 text-sky-200" aria-hidden="true"></i><span data-i18n="contact.bullet3">Practical checklists for listing and channel readiness</span></li>
+              </ul>
+              <p class="mt-6 border-t border-white/20 pt-5 text-xs leading-5 text-sky-100/90" data-i18n="contact.packageHandoff">Mention which support tier you have in mind—we will confirm scope and timing.</p>
+            </div>
           </div>
 
           <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-panel">
-            <form id="contact-form" class="grid gap-5 md:grid-cols-2">
+            <div class="border-b border-slate-100 pb-5">
+              <p class="text-[10px] font-black uppercase tracking-[0.2em] text-brand-700" data-i18n="contact.form.panelEyebrow">Support request</p>
+              <h3 class="mt-2 text-xl font-black tracking-tight text-slate-950" data-i18n="contact.form.panelTitle">Request a scoped response</h3>
+              <p class="mt-2 text-sm leading-6 text-slate-600" data-i18n="contact.form.panelLead">A few structured fields help us triage faster than a free-text message alone.</p>
+            </div>
+            <form id="contact-form" class="mt-6 grid gap-5 md:grid-cols-2">
+              <div class="md:col-span-2">
+                <p class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500" data-i18n="contact.form.contextHeading">Your situation</p>
+              </div>
+              <label class="md:col-span-1">
+                <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="contact.form.productCategory">Product type</span>
+                <select id="contact-product-category" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100"></select>
+              </label>
+              <label class="md:col-span-1">
+                <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="contact.form.sellerRole">Your role</span>
+                <select id="contact-seller-role" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100"></select>
+              </label>
+              <label class="md:col-span-1">
+                <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="contact.form.docGap">Document situation</span>
+                <select id="contact-doc-gap" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100"></select>
+              </label>
+              <label class="md:col-span-1">
+                <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="contact.form.urgency">Urgency</span>
+                <select id="contact-urgency" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100"></select>
+              </label>
+              <div class="md:col-span-2" role="group" aria-labelledby="contact-markets-heading">
+                <span id="contact-markets-heading" class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="contact.form.markets">Target markets</span>
+                <p id="contact-markets-hint" class="mb-3 text-xs leading-5 text-slate-500" data-i18n="contact.form.marketsHint">Select all that apply.</p>
+                <div id="contact-markets-container" class="flex flex-wrap gap-2" aria-describedby="contact-markets-hint"></div>
+              </div>
+              <div class="md:col-span-2 border-t border-slate-100 pt-2">
+                <p class="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500" data-i18n="contact.form.contactHeading">Contact details</p>
+              </div>
               <label class="md:col-span-1">
                 <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="contact.form.name">Full name</span>
-                <input id="contact-name" type="text" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="contact.form.namePlaceholder" placeholder="Enter your name">
+                <input id="contact-name" name="contact-name" type="text" autocomplete="name" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="contact.form.namePlaceholder" placeholder="Enter your name">
               </label>
               <label class="md:col-span-1">
                 <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="contact.form.email">Email</span>
-                <input id="contact-email" type="email" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="contact.form.emailPlaceholder" placeholder="Your email address">
+                <input id="contact-email" name="contact-email" type="email" autocomplete="email" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="contact.form.emailPlaceholder" placeholder="Your email address">
               </label>
               <label class="md:col-span-1">
                 <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="contact.form.company">Brand or store</span>
-                <input id="contact-company" type="text" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="contact.form.companyPlaceholder" placeholder="Store or company name">
+                <input id="contact-company" name="organization" type="text" autocomplete="organization" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="contact.form.companyPlaceholder" placeholder="Store or company name">
               </label>
               <label class="md:col-span-1">
                 <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="contact.form.phone">Phone</span>
-                <input id="contact-phone" type="tel" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="contact.form.phonePlaceholder" placeholder="+44 / +49 / +90">
+                <input id="contact-phone" name="contact-phone" type="tel" autocomplete="tel" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="contact.form.phonePlaceholder" placeholder="+44 / +49 / +90">
               </label>
               <label class="md:col-span-2">
-                <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="contact.form.message">What do you need help with?</span>
-                <textarea id="contact-message" rows="5" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="contact.form.messagePlaceholder" placeholder="Tell us which product, market, and missing documents you want help with."></textarea>
+                <span class="mb-2 block text-sm font-semibold text-slate-800" data-i18n="contact.form.message">Anything else we should know?</span>
+                <textarea id="contact-message" name="contact-message" rows="4" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="contact.form.messagePlaceholder" placeholder="Tell us which product, market, and missing documents you want help with."></textarea>
               </label>
               <button type="submit" class="md:col-span-2 inline-flex items-center justify-center gap-2 rounded-full bg-brand-700 px-7 py-3 text-sm font-semibold text-white hover:bg-brand-900">
-                <i class="fa-solid fa-paper-plane"></i>
+                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
                 <span data-i18n="contact.form.submit">Request Support</span>
               </button>
+              <div class="md:col-span-2 rounded-2xl border border-sky-100 bg-sky-50/50 px-5 py-4">
+                <p class="text-xs font-black uppercase tracking-[0.16em] text-brand-700" data-i18n="contact.nextSteps.title">What happens next</p>
+                <ol class="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-slate-700">
+                  <li data-i18n="contact.nextSteps.step1">We read your answers and any CertPath snapshot you referenced.</li>
+                  <li data-i18n="contact.nextSteps.step2">You receive a concise reply with suggested next actions—not a generic brochure.</li>
+                  <li data-i18n="contact.nextSteps.step3">If it is a fit, we propose scope, timeline, and pricing for Starter Pack or Expert Review.</li>
+                </ol>
+              </div>
             </form>
           </div>
         </div>
@@ -342,18 +658,69 @@
     </main>
 
     <footer class="border-t border-sky-100 bg-white/90">
-      <div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 md:flex-row md:items-center md:justify-between">
-        <div>
-          <div class="text-sm font-bold text-slate-900">CertPath</div>
-          <div id="footer-disclaimer" class="mt-1 max-w-3xl text-xs leading-5 text-slate-500"></div>
+      <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-bold text-slate-900">CertPath</div>
+            <p class="mt-1 max-w-3xl text-xs leading-5 text-slate-600" data-i18n="footer.tagline">UK/EU product compliance snapshot—preliminary guidance, not legal advice or certification.</p>
+            <div id="footer-disclaimer" class="mt-2 max-w-3xl text-xs leading-5 text-slate-500"></div>
+            <p id="footer-support" class="mt-3 text-xs leading-5 text-slate-600"></p>
+            <nav class="mt-4 border-t border-sky-100/80 pt-4" data-i18n-aria-label="footer.trustNavAria" aria-label="Trust and legal">
+              <p class="text-[10px] font-black uppercase tracking-[0.2em] text-brand-700" data-i18n="footer.trustEyebrow">Trust &amp; legal</p>
+              <div class="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-slate-600">
+                <a href="privacy.html" class="hover:text-brand-700" data-i18n="footer.trustPrivacy">Privacy</a>
+                <a href="terms.html" class="hover:text-brand-700" data-i18n="footer.trustTerms">Terms</a>
+                <a href="methodology.html" class="hover:text-brand-700" data-i18n="footer.trustMethodology">How it works</a>
+                <a href="about.html" class="hover:text-brand-700" data-i18n="footer.trustAbout">About</a>
+                <a href="disclaimer.html" class="hover:text-brand-700" data-i18n="footer.trustDisclaimer">Disclaimer</a>
+                <a href="resources/index.html" class="hover:text-brand-700" data-i18n="footer.resourceLibrary">Resource library</a>
+                <a href="landings/index.html" class="hover:text-brand-700" data-i18n="footer.nicheLandings">Niche use cases</a>
+              </div>
+            </nav>
+          </div>
+          <div id="footer-meta" class="shrink-0 text-xs font-semibold uppercase tracking-[0.2em] text-brand-700 lg:text-right"></div>
         </div>
-        <div id="footer-meta" class="text-xs font-semibold uppercase tracking-[0.2em] text-brand-700"></div>
       </div>
     </footer>
   </div>
 
+  <div id="email-report-modal" class="fixed inset-0 z-[250] hidden items-center justify-center bg-slate-900/50 p-4" aria-modal="true" role="dialog" aria-labelledby="email-modal-title">
+    <div class="max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
+      <div class="flex items-start justify-between gap-4">
+        <h3 id="email-modal-title" class="text-lg font-black text-slate-900" data-i18n="results.report.emailModalTitle">Email this report</h3>
+        <button type="button" id="email-modal-close" class="rounded-full p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-800" data-i18n-aria-label="results.report.emailModalCloseAria">
+          <span class="sr-only" data-i18n="results.report.emailModalClose">Close</span>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <p class="mt-3 text-sm leading-6 text-slate-600" data-i18n="results.report.emailModalIntro">CertPath does not send email from its servers in this demo. Copy the text or open your own email app.</p>
+      <label class="mt-4 block">
+        <span class="mb-1 block text-xs font-semibold text-slate-700" data-i18n="results.report.emailModalTo">To (optional)</span>
+        <input id="email-report-recipient" type="email" autocomplete="email" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-sky-100" data-i18n-placeholder="results.report.emailModalPlaceholder" placeholder="you@company.com">
+      </label>
+      <div class="mt-5 flex flex-wrap gap-2">
+        <button type="button" id="email-modal-copy" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm hover:border-brand-500 hover:text-brand-800">
+          <i class="fa-regular fa-copy"></i>
+          <span data-i18n="results.report.emailModalCopy">Copy report text</span>
+        </button>
+        <button type="button" id="email-modal-mailto" class="inline-flex items-center gap-2 rounded-full bg-brand-700 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-brand-900">
+          <i class="fa-solid fa-envelope"></i>
+          <span data-i18n="results.report.emailModalOpen">Open in email app</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="./runtime-config.js"></script>
+  <script src="./analytics/certpath-analytics.js"></script>
+  <script src="./services/ai-environment.js"></script>
+  <script src="./services/ai-explanation-service.js"></script>
   <script src="./translations.js"></script>
+  <script src="./engine/assessment-schema.js"></script>
+  <script src="./engine/compliance-rules.js"></script>
+  <script src="./engine/rule-engine.js"></script>
+  <script src="./report/report-renderer.js"></script>
+  <script src="./report/report-persistence.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>

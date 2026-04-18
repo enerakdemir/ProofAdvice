@@ -1,27 +1,47 @@
 const STORAGE_KEY = 'certpath-product-profile';
 const LANGUAGE_KEY = 'certpath-language';
 const GEMINI_KEY_STORAGE = 'certpath-gemini-api-key';
-const BROWSER_GEMINI_MODELS = ['gemini-3.1-flash-lite-preview', 'gemini-3-flash-preview'];
-const OFFICIAL_SOURCE_REFERENCES = [
-  {
-    title: 'GOV.UK: placing manufactured goods on the market in Great Britain',
-    url: 'https://www.gov.uk/guidance/placing-manufactured-goods-on-the-market-in-great-britain'
-  },
-  {
-    title: 'Your Europe: preparing technical documentation',
-    url: 'https://europa.eu/youreurope/business/product-requirements/compliance/preparing-technical-documentation/index_en.htm'
-  },
-  {
-    title: 'Your Europe: CE marking',
-    url: 'https://europa.eu/youreurope/business/product-requirements/labels-markings/ce-marking/index_en.htm'
-  },
-  {
-    title: 'Your Europe: declaration of conformity',
-    url: 'https://europa.eu/youreurope/business/product-requirements/compliance/declaration-of-conformity/index_en.htm'
+const SESSION_CONTACT_FROM_REPORT = 'certpath-contact-from-report';
+const SESSION_ANALYTICS_ASSESSMENT_STARTED = 'certpath-analytics-assessment-started';
+const WIZARD_STEP_COUNT = 5;
+
+const CONTACT_DOC_GAP_VALUES = ['mostly_complete', 'partial_missing', 'substantial_gaps', 'export_route', 'not_sure'];
+const CONTACT_URGENCY_VALUES = ['planning', 'active', 'blocked', 'tender'];
+
+let reportToolbarBound = false;
+
+function trackProduct(eventName, properties = {}) {
+  const A = window.CertPathAnalytics;
+  if (!A?.track) {
+    return;
   }
-];
+  A.track(eventName, {
+    locale: state.locale,
+    ...properties
+  });
+}
+
+function setAppMetaForAnalytics() {
+  window.__CERTPATH_APP_META__ = {
+    version: state.data?.meta?.version,
+    dataVersion: state.data?.meta?.lastGlobalUpdate
+  };
+}
+
+function markAssessmentStartedOnce(entry) {
+  try {
+    if (sessionStorage.getItem(SESSION_ANALYTICS_ASSESSMENT_STARTED)) {
+      return;
+    }
+    sessionStorage.setItem(SESSION_ANALYTICS_ASSESSMENT_STARTED, '1');
+    trackProduct(window.CertPathAnalytics.EVENTS.ASSESSMENT_STARTED, { entry });
+  } catch {
+    /* sessionStorage unavailable */
+  }
+}
 
 const elements = {
+  assessmentForm: document.getElementById('assessment-form'),
   productName: document.getElementById('product-name'),
   productUrl: document.getElementById('product-url'),
   salesChannel: document.getElementById('sales-channel'),
@@ -35,15 +55,48 @@ const elements = {
   childrenContainer: document.getElementById('children-container'),
   marketsContainer: document.getElementById('markets-container'),
   documentsContainer: document.getElementById('documents-container'),
+  electricalPowerContainer: document.getElementById('electrical-power-container'),
+  batteryRemovableContainer: document.getElementById('battery-removable-container'),
+  batteryChemistryContainer: document.getElementById('battery-chemistry-container'),
+  wirelessTechContainer: document.getElementById('wireless-tech-container'),
+  childAgeContainer: document.getElementById('child-age-container'),
+  electricalContextPanel: document.getElementById('electrical-context-panel'),
+  batteryFollowupPanel: document.getElementById('battery-followup-panel'),
+  wirelessContextPanel: document.getElementById('wireless-context-panel'),
+  skinContactNotePanel: document.getElementById('skin-contact-note-panel'),
+  childrenWarningPanel: document.getElementById('children-warning-panel'),
+  wizardProgressBar: document.getElementById('wizard-progress-bar'),
+  wizardStepIndicator: document.getElementById('wizard-step-indicator'),
+  wizardStepHeading: document.getElementById('wizard-step-heading'),
+  wizardStepHint: document.getElementById('wizard-step-hint'),
+  wizardValidationBanner: document.getElementById('wizard-validation-banner'),
+  wizardReviewSummary: document.getElementById('wizard-review-summary'),
+  wizardBackButton: document.getElementById('wizard-back-button'),
+  wizardNextButton: document.getElementById('wizard-next-button'),
   findButton: document.getElementById('find-button'),
   resetButton: document.getElementById('reset-button'),
   geminiApiKey: document.getElementById('gemini-api-key'),
   saveApiKeyButton: document.getElementById('save-api-key-button'),
   clearApiKeyButton: document.getElementById('clear-api-key-button'),
   apiKeyStatus: document.getElementById('api-key-status'),
-  summaryGrid: document.getElementById('summary-grid'),
-  resultGrid: document.getElementById('result-grid'),
-  nextActions: document.getElementById('next-actions'),
+  complianceReportBody: document.getElementById('compliance-report-body'),
+  reportToolbar: document.getElementById('report-toolbar'),
+  expertHandoffBanner: document.getElementById('expert-handoff-banner'),
+  reportBtnPdf: document.getElementById('report-btn-pdf'),
+  reportBtnEmail: document.getElementById('report-btn-email'),
+  reportBtnSave: document.getElementById('report-btn-save'),
+  reportBtnShare: document.getElementById('report-btn-share'),
+  reportBtnExpert: document.getElementById('report-btn-expert'),
+  reportBtnExpertBanner: document.getElementById('report-btn-expert-banner'),
+  reportBtnEdit: document.getElementById('report-btn-edit'),
+  reportHistoryPanel: document.getElementById('report-history-panel'),
+  reportHistoryList: document.getElementById('report-history-list'),
+  emailReportModal: document.getElementById('email-report-modal'),
+  emailModalClose: document.getElementById('email-modal-close'),
+  emailModalCopy: document.getElementById('email-modal-copy'),
+  emailModalMailto: document.getElementById('email-modal-mailto'),
+  emailReportRecipient: document.getElementById('email-report-recipient'),
+  reportToast: document.getElementById('report-toast'),
   analysisStatus: document.getElementById('analysis-status'),
   statsGrid: document.getElementById('stats-grid'),
   playbookGrid: document.getElementById('playbook-grid'),
@@ -53,7 +106,15 @@ const elements = {
   savedStatus: document.getElementById('saved-status'),
   footerDisclaimer: document.getElementById('footer-disclaimer'),
   footerMeta: document.getElementById('footer-meta'),
+  footerSupport: document.getElementById('footer-support'),
+  wizardLiveRegion: document.getElementById('wizard-live-region'),
   contactForm: document.getElementById('contact-form'),
+  contactMessage: document.getElementById('contact-message'),
+  contactProductCategory: document.getElementById('contact-product-category'),
+  contactSellerRole: document.getElementById('contact-seller-role'),
+  contactDocGap: document.getElementById('contact-doc-gap'),
+  contactUrgency: document.getElementById('contact-urgency'),
+  contactMarketsContainer: document.getElementById('contact-markets-container'),
   languageSwitcher: document.getElementById('language-switcher'),
   mobileLanguageSwitcher: document.getElementById('language-switcher-mobile'),
   metaDescription: document.querySelector('meta[name="description"]')
@@ -63,8 +124,22 @@ const state = {
   data: null,
   locale: 'en',
   activeSection: '',
-  aiAnalysis: null
+  aiAnalysis: null,
+  wizardStep: 1,
+  reportContext: null
 };
+
+let profileSaveTimer = null;
+
+function scheduleProfilePersistFromInput() {
+  window.clearTimeout(profileSaveTimer);
+  profileSaveTimer = window.setTimeout(() => {
+    saveProfile(getProfile());
+    if (state.wizardStep === 5) {
+      renderWizardReview();
+    }
+  }, 280);
+}
 
 function getSupportedLocales() {
   return window.APP_I18N?.locales || [];
@@ -109,8 +184,8 @@ function renderLanguageSwitchers() {
       button.type = 'button';
       button.dataset.locale = locale.code;
       button.className = locale.code === state.locale
-        ? 'rounded-full bg-brand-700 px-3 py-1.5 text-xs font-semibold text-white transition'
-        : 'rounded-full px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-sky-50 hover:text-brand-700';
+        ? 'rounded-full bg-brand-700 px-3 py-1.5 text-xs font-semibold text-white transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white'
+        : 'rounded-full px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-sky-50 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500';
       button.textContent = locale.label;
       button.setAttribute('aria-pressed', String(locale.code === state.locale));
       button.setAttribute('aria-label', `${t('language.label')}: ${locale.nativeName}`);
@@ -122,12 +197,27 @@ function renderLanguageSwitchers() {
 function applyStaticTranslations() {
   document.documentElement.lang = state.locale;
   document.title = t('meta.title');
-  elements.metaDescription.setAttribute('content', t('meta.description'));
+  elements.metaDescription?.setAttribute('content', t('meta.description'));
+  const desc = t('meta.description');
+  const title = t('meta.title');
+  document.getElementById('meta-og-title')?.setAttribute('content', title);
+  document.getElementById('meta-og-description')?.setAttribute('content', desc);
+  document.getElementById('meta-twitter-title')?.setAttribute('content', title);
+  document.getElementById('meta-twitter-description')?.setAttribute('content', desc);
+  try {
+    const path = `${window.location.pathname}${window.location.search || ''}`;
+    document.getElementById('certpath-canonical')?.setAttribute('href', `${window.location.origin}${path}`.split('#')[0]);
+  } catch {
+    /* ignore */
+  }
   document.querySelectorAll('[data-i18n]').forEach((node) => {
     node.textContent = t(node.dataset.i18n);
   });
   document.querySelectorAll('[data-i18n-placeholder]').forEach((node) => {
     node.setAttribute('placeholder', t(node.dataset.i18nPlaceholder));
+  });
+  document.querySelectorAll('[data-i18n-aria-label]').forEach((node) => {
+    node.setAttribute('aria-label', t(node.dataset.i18nAriaLabel));
   });
 }
 
@@ -168,6 +258,13 @@ function setSavedStatus(mode) {
 
 function renderApiKeyStatus() {
   if (!elements.apiKeyStatus || !elements.geminiApiKey) {
+    return;
+  }
+
+  if (window.CertPathAiEnvironment && !window.CertPathAiEnvironment.isBrowserGeminiDemoEnabled()) {
+    elements.geminiApiKey.value = '';
+    elements.apiKeyStatus.textContent = t('assessment.apiKeyDisabledEnv');
+    elements.apiKeyStatus.className = 'mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500';
     return;
   }
 
@@ -214,7 +311,7 @@ function renderBinaryOptions(container, name, items, selectedValue = '') {
   container.innerHTML = '';
   items.forEach((item) => {
     const wrapper = document.createElement('label');
-    wrapper.className = 'flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:border-sky-300 hover:bg-white';
+    wrapper.className = 'flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:border-sky-300 hover:bg-white focus-within:border-brand-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-sky-100';
     wrapper.innerHTML = `
       <input type="radio" name="${name}" value="${item.value}" class="mt-1 h-4 w-4 border-slate-300 text-brand-700 focus:ring-brand-500" ${selectedValue === item.value ? 'checked' : ''}>
       <span class="font-semibold text-slate-900">${localize(item.label)}</span>
@@ -227,7 +324,7 @@ function renderCheckboxOptions(container, items, selectedValues = []) {
   container.innerHTML = '';
   items.forEach((item) => {
     const wrapper = document.createElement('label');
-    wrapper.className = 'flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:border-sky-300 hover:bg-white';
+    wrapper.className = 'flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:border-sky-300 hover:bg-white focus-within:border-brand-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-sky-100';
     wrapper.innerHTML = `
       <input type="checkbox" value="${item.value}" class="mt-1 h-4 w-4 rounded border-slate-300 text-brand-700 focus:ring-brand-500" ${selectedValues.includes(item.value) ? 'checked' : ''}>
       <span class="font-semibold text-slate-900">${localize(item.label)}</span>
@@ -244,6 +341,130 @@ function getCheckboxValues(container) {
   return Array.from(container.querySelectorAll('input[type="checkbox"]:checked')).map((input) => input.value);
 }
 
+function populateContactDocGapSelect() {
+  if (!elements.contactDocGap) {
+    return;
+  }
+  elements.contactDocGap.innerHTML = '';
+  elements.contactDocGap.appendChild(createOption('', t('contact.form.selectPlaceholder')));
+  CONTACT_DOC_GAP_VALUES.forEach((value) => {
+    elements.contactDocGap.appendChild(createOption(value, t(`contact.docGaps.${value}`)));
+  });
+}
+
+function populateContactUrgencySelect() {
+  if (!elements.contactUrgency) {
+    return;
+  }
+  elements.contactUrgency.innerHTML = '';
+  elements.contactUrgency.appendChild(createOption('', t('contact.form.selectPlaceholder')));
+  CONTACT_URGENCY_VALUES.forEach((value) => {
+    elements.contactUrgency.appendChild(createOption(value, t(`contact.urgency.${value}`)));
+  });
+}
+
+function renderContactMarketChips(container, selectedValues = []) {
+  if (!container || !state.data?.filters?.markets) {
+    return;
+  }
+  container.innerHTML = '';
+  state.data.filters.markets.forEach((item) => {
+    const wrapper = document.createElement('label');
+    wrapper.className = 'inline-flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-sky-300 hover:bg-white focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-sky-100';
+    const checked = selectedValues.includes(item.value);
+    wrapper.innerHTML = `
+      <input type="checkbox" name="contact-market" value="${escapeHtml(item.value)}" class="h-3.5 w-3.5 shrink-0 rounded border-slate-300 text-brand-700 focus:ring-brand-500" ${checked ? 'checked' : ''}>
+      <span>${escapeHtml(localize(item.label))}</span>
+    `;
+    container.appendChild(wrapper);
+  });
+}
+
+function getContactMarketSelection() {
+  if (!elements.contactMarketsContainer) {
+    return [];
+  }
+  return Array.from(elements.contactMarketsContainer.querySelectorAll('input[name="contact-market"]:checked')).map((input) => input.value);
+}
+
+function deriveRecommendedDocGap(profile) {
+  const held = profile?.documents?.length ?? 0;
+  const total = state.data?.filters?.documents?.length || 1;
+  if (held === 0) {
+    return 'substantial_gaps';
+  }
+  if (held < Math.max(1, Math.ceil(total / 2))) {
+    return 'partial_missing';
+  }
+  return 'mostly_complete';
+}
+
+function buildReportContactMessage(profile) {
+  const channel = profile.salesChannel ? getFilterLabel('channels', profile.salesChannel) : '—';
+  const category = profile.productCategory ? getFilterLabel('categories', profile.productCategory) : '—';
+  const role = profile.sellerRole ? getFilterLabel('sellerRoles', profile.sellerRole) : '—';
+  const markets = profile.markets?.length
+    ? profile.markets.map((m) => getFilterLabel('markets', m)).join(', ')
+    : '—';
+  const docs = profile.documents?.length
+    ? profile.documents.map((d) => getFilterLabel('documents', d)).join(', ')
+    : t('common.none');
+  const url = profile.productUrl?.trim() ? profile.productUrl.trim() : t('common.none');
+  return t('contact.prefillReportBody', {
+    product: profile.productName?.trim() || '—',
+    channel,
+    category,
+    role,
+    markets,
+    docs,
+    url
+  });
+}
+
+function prefillContactFromProfile(profile) {
+  if (elements.contactProductCategory) {
+    elements.contactProductCategory.value = profile.productCategory || '';
+  }
+  if (elements.contactSellerRole) {
+    elements.contactSellerRole.value = profile.sellerRole || '';
+  }
+  if (elements.contactDocGap) {
+    elements.contactDocGap.value = deriveRecommendedDocGap(profile);
+  }
+  if (elements.contactUrgency) {
+    elements.contactUrgency.value = 'planning';
+  }
+  renderContactMarketChips(elements.contactMarketsContainer, profile.markets || []);
+}
+
+function applyContactPrefillFromAssessmentReport() {
+  if (!sessionStorage.getItem(SESSION_CONTACT_FROM_REPORT)) {
+    return;
+  }
+  sessionStorage.removeItem(SESSION_CONTACT_FROM_REPORT);
+  const profile = getProfile();
+  prefillContactFromProfile(profile);
+  if (elements.contactMessage && !elements.contactMessage.value.trim()) {
+    elements.contactMessage.value = buildReportContactMessage(profile);
+  }
+}
+
+function renderContactSupportFields() {
+  if (!state.data?.filters || !elements.contactProductCategory) {
+    return;
+  }
+  populateSelect(elements.contactProductCategory, t('contact.form.selectPlaceholder'), state.data.filters.categories);
+  populateSelect(elements.contactSellerRole, t('contact.form.selectPlaceholder'), state.data.filters.sellerRoles);
+  populateContactDocGapSelect();
+  populateContactUrgencySelect();
+  renderContactMarketChips(elements.contactMarketsContainer, []);
+}
+
+function applyContactPrefills() {
+  applyContactPrefillFromPackageInterest();
+  applyContactPrefillFromAssessmentReport();
+}
+
 function getProfile() {
   return {
     productName: elements.productName.value.trim(),
@@ -258,24 +479,41 @@ function getProfile() {
     skinContact: getRadioValue(elements.skinContactContainer),
     children: getRadioValue(elements.childrenContainer),
     markets: getCheckboxValues(elements.marketsContainer),
-    documents: getCheckboxValues(elements.documentsContainer)
+    documents: getCheckboxValues(elements.documentsContainer),
+    electricalPowerSource: elements.electricalPowerContainer ? getRadioValue(elements.electricalPowerContainer) : '',
+    batteryRemovable: elements.batteryRemovableContainer ? getRadioValue(elements.batteryRemovableContainer) : '',
+    batteryChemistry: elements.batteryChemistryContainer ? getRadioValue(elements.batteryChemistryContainer) : '',
+    wirelessTech: elements.wirelessTechContainer ? getRadioValue(elements.wirelessTechContainer) : '',
+    childAgeFocus: elements.childAgeContainer ? getRadioValue(elements.childAgeContainer) : ''
   };
 }
 
 function isProfileReady(profile) {
-  return Boolean(
-    profile.productName
-    && profile.salesChannel
-    && profile.productCategory
-    && profile.sellerRole
-    && profile.ceStatus
-    && profile.electrical
-    && profile.battery
-    && profile.wireless
-    && profile.skinContact
-    && profile.children
-    && profile.markets.length
-  );
+  if (!profile.productName?.trim()) {
+    return false;
+  }
+  if (!profile.salesChannel || !profile.productCategory || !profile.sellerRole || !profile.ceStatus) {
+    return false;
+  }
+  if (!profile.electrical || !profile.battery || !profile.wireless || !profile.skinContact || !profile.children) {
+    return false;
+  }
+  if (profile.electrical === 'yes' && !profile.electricalPowerSource) {
+    return false;
+  }
+  if (profile.battery === 'yes' && (!profile.batteryRemovable || !profile.batteryChemistry)) {
+    return false;
+  }
+  if (profile.wireless === 'yes' && !profile.wirelessTech) {
+    return false;
+  }
+  if (profile.children === 'yes' && !profile.childAgeFocus) {
+    return false;
+  }
+  if (!profile.markets?.length) {
+    return false;
+  }
+  return true;
 }
 
 function saveProfile(profile) {
@@ -289,6 +527,199 @@ function readProfile() {
     return raw ? JSON.parse(raw) : null;
   } catch (error) {
     return null;
+  }
+}
+
+function getWizardStepPanels() {
+  return Array.from(document.querySelectorAll('[data-wizard-step]'));
+}
+
+function hideWizardValidation() {
+  if (!elements.wizardValidationBanner) {
+    return;
+  }
+  elements.wizardValidationBanner.classList.add('hidden');
+  elements.wizardValidationBanner.textContent = '';
+}
+
+function toggleBranchPanel(panel, visible) {
+  if (!panel) {
+    return;
+  }
+  panel.classList.toggle('hidden', !visible);
+}
+
+function syncWizardBranchPanels() {
+  const profile = getProfile();
+  toggleBranchPanel(elements.electricalContextPanel, profile.electrical === 'yes');
+  toggleBranchPanel(elements.batteryFollowupPanel, profile.battery === 'yes');
+  toggleBranchPanel(elements.wirelessContextPanel, profile.wireless === 'yes');
+  toggleBranchPanel(elements.skinContactNotePanel, profile.skinContact === 'yes');
+  toggleBranchPanel(elements.childrenWarningPanel, profile.children === 'yes');
+}
+
+function validateWizardStep(step) {
+  const profile = getProfile();
+  if (step === 1) {
+    if (!profile.productName?.trim()) {
+      return { ok: false, message: t('wizard.validation.step1') };
+    }
+    return { ok: true };
+  }
+  if (step === 2) {
+    if (!profile.salesChannel || !profile.productCategory || !profile.sellerRole || !profile.ceStatus) {
+      return { ok: false, message: t('wizard.validation.step2') };
+    }
+    return { ok: true };
+  }
+  if (step === 3) {
+    if (!profile.electrical || !profile.battery || !profile.wireless || !profile.skinContact || !profile.children) {
+      return { ok: false, message: t('wizard.validation.step3') };
+    }
+    if (profile.electrical === 'yes' && !profile.electricalPowerSource) {
+      return { ok: false, message: t('wizard.validation.electricalPower') };
+    }
+    if (profile.battery === 'yes' && (!profile.batteryRemovable || !profile.batteryChemistry)) {
+      return { ok: false, message: t('wizard.validation.batteryFollowup') };
+    }
+    if (profile.wireless === 'yes' && !profile.wirelessTech) {
+      return { ok: false, message: t('wizard.validation.wirelessTech') };
+    }
+    if (profile.children === 'yes' && !profile.childAgeFocus) {
+      return { ok: false, message: t('wizard.validation.childAge') };
+    }
+    return { ok: true };
+  }
+  if (step === 4) {
+    if (!profile.markets?.length) {
+      return { ok: false, message: t('wizard.validation.markets') };
+    }
+    return { ok: true };
+  }
+  return { ok: true };
+}
+
+function renderWizardChrome() {
+  if (!elements.wizardProgressBar || !elements.wizardStepIndicator) {
+    return;
+  }
+
+  const step = state.wizardStep;
+  const pct = (step / WIZARD_STEP_COUNT) * 100;
+  elements.wizardProgressBar.style.width = `${pct}%`;
+  elements.wizardStepIndicator.textContent = t('wizard.stepOf', { current: step, total: WIZARD_STEP_COUNT });
+  elements.wizardStepHeading.textContent = t(`wizard.stepTitles.s${step}`);
+  elements.wizardStepHint.textContent = t(`wizard.stepHints.s${step}`);
+
+  if (elements.wizardLiveRegion) {
+    elements.wizardLiveRegion.textContent = `${t('wizard.stepOf', { current: step, total: WIZARD_STEP_COUNT })} — ${t(`wizard.stepTitles.s${step}`)}. ${t(`wizard.stepHints.s${step}`)}`;
+  }
+
+  getWizardStepPanels().forEach((panel) => {
+    const n = Number(panel.dataset.wizardStep);
+    const active = n === step;
+    if (n === 1) {
+      panel.classList.toggle('hidden', !active);
+      panel.classList.toggle('contents', active);
+    } else {
+      panel.classList.toggle('hidden', !active);
+    }
+  });
+
+  if (elements.wizardBackButton) {
+    elements.wizardBackButton.classList.toggle('hidden', step <= 1);
+  }
+  if (elements.wizardNextButton) {
+    elements.wizardNextButton.classList.toggle('hidden', step >= WIZARD_STEP_COUNT);
+  }
+  if (elements.findButton) {
+    const showGenerate = step >= WIZARD_STEP_COUNT;
+    elements.findButton.style.display = showGenerate ? 'inline-flex' : 'none';
+  }
+}
+
+function renderWizardReview() {
+  if (!elements.wizardReviewSummary) {
+    return;
+  }
+
+  const profile = getProfile();
+  const rows = [
+    [t('assessment.fields.productName'), profile.productName || '—'],
+    [t('assessment.fields.productUrl'), profile.productUrl || t('common.none')],
+    [t('assessment.fields.channel'), profile.salesChannel ? getFilterLabel('channels', profile.salesChannel) : '—'],
+    [t('assessment.fields.category'), profile.productCategory ? getFilterLabel('categories', profile.productCategory) : '—'],
+    [t('assessment.fields.role'), profile.sellerRole ? getFilterLabel('sellerRoles', profile.sellerRole) : '—'],
+    [t('assessment.fields.ceStatus'), profile.ceStatus ? getFilterLabel('ceStatuses', profile.ceStatus) : '—'],
+    [t('assessment.fields.electrical'), profile.electrical ? getFilterLabel('binaryOptions', profile.electrical) : '—'],
+    [t('assessment.fields.battery'), profile.battery ? getFilterLabel('binaryOptions', profile.battery) : '—'],
+    [t('assessment.fields.wireless'), profile.wireless ? getFilterLabel('binaryOptions', profile.wireless) : '—'],
+    [t('assessment.fields.skinContact'), profile.skinContact ? getFilterLabel('binaryOptions', profile.skinContact) : '—'],
+    [t('assessment.fields.children'), profile.children ? getFilterLabel('binaryOptions', profile.children) : '—'],
+    [t('assessment.fields.markets'), profile.markets.length ? profile.markets.map((m) => getFilterLabel('markets', m)).join(', ') : '—'],
+    [t('assessment.fields.documents'), profile.documents.length ? profile.documents.map((d) => getFilterLabel('documents', d)).join(', ') : t('common.none')]
+  ];
+
+  if (profile.electrical === 'yes' && profile.electricalPowerSource) {
+    rows.push([t('assessment.fields.electricalPower'), getFilterLabel('electricalPowerSource', profile.electricalPowerSource)]);
+  }
+  if (profile.battery === 'yes') {
+    if (profile.batteryRemovable) {
+      rows.push([t('assessment.fields.batteryRemovable'), getFilterLabel('batteryRemovable', profile.batteryRemovable)]);
+    }
+    if (profile.batteryChemistry) {
+      rows.push([t('assessment.fields.batteryChemistry'), getFilterLabel('batteryChemistry', profile.batteryChemistry)]);
+    }
+  }
+  if (profile.wireless === 'yes' && profile.wirelessTech) {
+    rows.push([t('assessment.fields.wirelessTech'), getFilterLabel('wirelessTech', profile.wirelessTech)]);
+  }
+  if (profile.children === 'yes' && profile.childAgeFocus) {
+    rows.push([t('assessment.fields.childAgeFocus'), getFilterLabel('childAgeFocus', profile.childAgeFocus)]);
+  }
+
+  elements.wizardReviewSummary.innerHTML = rows.map(([dt, dd]) => `
+    <div class="grid gap-1 px-4 py-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] sm:items-start sm:gap-6">
+      <dt class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500">${dt}</dt>
+      <dd class="text-sm font-semibold text-slate-900">${dd}</dd>
+    </div>
+  `).join('');
+}
+
+function scrollWizardToTop() {
+  document.getElementById('wizard-progress-wrap')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function handleWizardNext() {
+  hideWizardValidation();
+  const result = validateWizardStep(state.wizardStep);
+  if (!result.ok) {
+    if (elements.wizardValidationBanner) {
+      elements.wizardValidationBanner.textContent = result.message;
+      elements.wizardValidationBanner.classList.remove('hidden');
+    }
+    return;
+  }
+  if (state.wizardStep < WIZARD_STEP_COUNT) {
+    const previousStep = state.wizardStep;
+    state.wizardStep += 1;
+    if (previousStep === 1 && state.wizardStep === 2) {
+      markAssessmentStartedOnce('wizard');
+    }
+    if (state.wizardStep === 5) {
+      renderWizardReview();
+    }
+    renderWizardChrome();
+    scrollWizardToTop();
+  }
+}
+
+function handleWizardBack() {
+  hideWizardValidation();
+  if (state.wizardStep > 1) {
+    state.wizardStep -= 1;
+    renderWizardChrome();
+    scrollWizardToTop();
   }
 }
 
@@ -323,397 +754,83 @@ function createEmptyState() {
   `;
 }
 
-function uniquePush(list, value) {
-  if (value && !list.includes(value)) {
-    list.push(value);
-  }
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
-function normalizeTextList(value) {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-
-  return value
-    .map((item) => (typeof item === 'string' ? item.trim() : ''))
-    .filter(Boolean);
-}
-
-function normalizeSourceList(value) {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-
-  return value
-    .map((item) => {
-      if (typeof item === 'string') {
-        const trimmed = item.trim();
-        return trimmed ? { title: trimmed, url: trimmed } : null;
-      }
-
-      if (!item || typeof item !== 'object') {
-        return null;
-      }
-
-      const title = typeof item.title === 'string' ? item.title.trim() : '';
-      const url = typeof item.url === 'string' ? item.url.trim() : '';
-      if (!title && !url) {
-        return null;
-      }
-      return {
-        title: title || url,
-        url
-      };
-    })
-    .filter(Boolean);
-}
-
-function normalizeAiAnalysis(value) {
-  if (!value || typeof value !== 'object') {
+function runDeterministicEngine(profile) {
+  if (!globalThis.CertPathRuleEngine || typeof globalThis.CertPathRuleEngine.run !== 'function') {
     return null;
   }
-
-  return {
-    summary: typeof value.summary === 'string' ? value.summary.trim() : '',
-    requiredDocuments: normalizeTextList(value.requiredDocuments),
-    regulations: normalizeTextList(value.regulations),
-    missing: normalizeTextList(value.missing),
-    risks: normalizeTextList(value.risks),
-    nextSteps: normalizeTextList(value.nextSteps),
-    supportPath: normalizeTextList(value.supportPath),
-    sourcesUsed: normalizeSourceList(value.sourcesUsed)
-  };
+  return globalThis.CertPathRuleEngine.run(profile);
 }
 
-function parseModelJson(text) {
-  const trimmed = text.trim();
-  const fencedMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
-  const candidate = fencedMatch ? fencedMatch[1] : trimmed;
-  return JSON.parse(candidate);
+function configureAiDemoUiVisibility() {
+  window.CertPathAiEnvironment?.syncBrowserDemoPanelVisibility?.();
 }
 
-function buildBrowserPrompt(profile) {
-  return `
-You are a UK/EU certificate and conformity evidence advisor for companies and small e-commerce sellers.
-
-Task:
-- Review the product intake and outline likely certificates, conformity documentation, and evidence the business may need.
-- Use the official references below as the grounding list for your answer.
-- Do not invent certifications or legal certainty.
-- If information is missing, say so clearly.
-- Keep the output practical and seller-friendly.
-- Focus on likely UK and EU market-entry requirements for technical products.
-
-Return JSON only in this exact format:
-{
-  "summary": "short paragraph",
-  "requiredDocuments": ["..."],
-  "regulations": ["..."],
-  "missing": ["..."],
-  "risks": ["..."],
-  "nextSteps": ["..."],
-  "supportPath": ["..."],
-  "sourcesUsed": [
-    { "title": "...", "url": "..." }
-  ]
-}
-
-Rules:
-- Write the output in locale "${state.locale}".
-- Keep arrays concise and actionable.
-- Only use URLs from the official references list.
-- If something is uncertain, put it under "missing" or "risks".
-
-Product intake:
-${JSON.stringify(profile, null, 2)}
-
-Official references:
-${OFFICIAL_SOURCE_REFERENCES.map((source) => `- ${source.title}: ${source.url}`).join('\n')}
-`.trim();
-}
-
-async function callBrowserGeminiModel(prompt, apiKey, model) {
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      contents: [
-        {
-          role: 'user',
-          parts: [{ text: prompt }]
-        }
-      ],
-      generationConfig: {
-        temperature: 0.1,
-        responseMimeType: 'application/json'
-      }
-    })
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Browser Gemini request failed for ${model}: ${response.status} ${errorText}`);
-  }
-
-  const payload = await response.json();
-  const text = payload?.candidates?.[0]?.content?.parts?.map((part) => part.text || '').join('') || '';
-  if (!text.trim()) {
-    throw new Error(`Browser Gemini returned an empty response for ${model}.`);
-  }
-
-  const parsed = parseModelJson(text);
-  return normalizeAiAnalysis({
-    ...parsed,
-    sourcesUsed: Array.isArray(parsed.sourcesUsed) && parsed.sourcesUsed.length
-      ? parsed.sourcesUsed
-      : OFFICIAL_SOURCE_REFERENCES
-  });
-}
-
-async function fetchBrowserAiAnalysis(profile) {
-  const apiKey = getBrowserApiKey();
-  if (!apiKey) {
-    state.aiAnalysis = null;
-    setAnalysisStatus(t('results.aiUnavailable'), 'warning');
-    return null;
-  }
-
-  const prompt = buildBrowserPrompt(profile);
-  let lastError = null;
-
-  for (const model of BROWSER_GEMINI_MODELS) {
-    try {
-      const analysis = await callBrowserGeminiModel(prompt, apiKey, model);
-      state.aiAnalysis = analysis;
-      setAnalysisStatus(t('results.aiBrowserReady', { model }), 'success');
-      renderResults(profile);
-      return analysis;
-    } catch (error) {
-      lastError = error;
-    }
-  }
-
-  state.aiAnalysis = null;
-  setAnalysisStatus(t('results.aiBrowserError'), 'warning');
-  renderResults(profile);
-  return null;
-}
-
-function getAiEndpoint() {
-  return window.APP_CONFIG?.AI_ENDPOINT?.trim() || '';
-}
-
+/**
+ * AI Layer 2: delegates to services/ai-explanation-service.js (routing, prompts, browser demo).
+ * Production uses AI_ENDPOINT only; development may use the same endpoint or the browser demo when allowed.
+ */
 async function fetchAiAnalysis(profile) {
-  const endpoint = getAiEndpoint();
-  if (!endpoint) {
-    return fetchBrowserAiAnalysis(profile);
-  }
-
-  setAnalysisStatus(t('results.aiLoading'), 'info');
-
-  const controller = new AbortController();
-  const timeout = Number(window.APP_CONFIG?.AI_TIMEOUT_MS || 30000);
-  const timeoutId = window.setTimeout(() => controller.abort(), timeout);
-
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        locale: state.locale,
-        profile
-      }),
-      signal: controller.signal
-    });
-
-    if (!response.ok) {
-      throw new Error(`AI request failed with status ${response.status}`);
-    }
-
-    const payload = await response.json();
-    const analysis = normalizeAiAnalysis(payload.analysis);
-    if (!analysis) {
-      throw new Error('AI response did not include a valid analysis payload');
-    }
-
-    state.aiAnalysis = analysis;
-    setAnalysisStatus(t('results.aiReady'), 'success');
-    renderResults(profile);
-    return analysis;
-  } catch (error) {
+  const svc = window.CertPathAiExplanationService;
+  if (!svc?.requestExplanation) {
     state.aiAnalysis = null;
-    const message = error.name === 'AbortError' ? t('results.aiError') : t('results.aiFallback');
-    setAnalysisStatus(message, 'warning');
-    renderResults(profile);
+    setAnalysisStatus(t('results.aiRendererMissing'), 'error');
+    renderResults(profile, { emitResultViewAnalytics: false });
     return null;
-  } finally {
-    window.clearTimeout(timeoutId);
-  }
-}
-
-function buildAnalysis(profile) {
-  const requiredDocuments = [];
-  const regulations = [];
-  const missing = [];
-  const risks = [];
-  const nextSteps = [];
-
-  uniquePush(requiredDocuments, 'Declaration of Conformity');
-  uniquePush(requiredDocuments, 'Technical file structure');
-  uniquePush(requiredDocuments, 'Label and marking review');
-  uniquePush(requiredDocuments, 'User manual / instructions');
-
-  if (profile.markets.includes('eu')) {
-    uniquePush(regulations, 'EU GPSR readiness review');
-    uniquePush(nextSteps, 'Confirm the EU listing path and make sure the product file supports EU market surveillance requests.');
-  }
-  if (profile.markets.includes('uk')) {
-    uniquePush(regulations, 'UK product safety and importer responsibility review');
-    uniquePush(nextSteps, 'Review UK-side importer or responsible operator expectations before launch.');
   }
 
-  if (profile.electrical === 'yes') {
-    uniquePush(requiredDocuments, 'Electrical test evidence');
-    uniquePush(regulations, 'Electrical safety review');
-    uniquePush(regulations, 'EMC review');
-    uniquePush(nextSteps, 'Check electrical safety evidence and make sure the technical file references the right product variant.');
-  } else if (profile.electrical === 'not-sure') {
-    uniquePush(missing, 'Clarify whether the product is classified as electrical.');
+  const result = await svc.requestExplanation({
+    profile,
+    locale: state.locale,
+    runEngine: runDeterministicEngine,
+    getBrowserApiKey,
+    translate: t,
+    onStatus: (message, tone) => {
+      setAnalysisStatus(message ?? '', tone || 'neutral');
+    },
+    log: (event, detail) => {
+      if (window.APP_CONFIG?.AI_CLIENT_DEBUG) {
+        console.info('[CertPath AI app]', event, detail);
+      }
+    }
+  });
+
+  if (!result.ok) {
+    state.aiAnalysis = null;
+    const keyMap = {
+      production_no_endpoint: 'results.aiProductionNoEndpoint',
+      no_browser_key: 'results.aiUnavailable',
+      browser_demo_disabled: 'results.aiDemoDisabled',
+      engine_missing: 'results.engineMissing',
+      worker_http_error: 'results.aiFallback',
+      worker_invalid_payload: 'results.aiFallback',
+      aborted: 'results.aiError',
+      exception: 'results.aiFallback',
+      browser_gemini_failed: 'results.aiBrowserError',
+      worker_failed: 'results.aiFallback',
+      env_missing: 'results.aiRendererMissing'
+    };
+    const key = keyMap[result.reason] || 'results.aiFallback';
+    setAnalysisStatus(t(key), result.reason === 'engine_missing' ? 'error' : 'warning');
+    renderResults(profile, { emitResultViewAnalytics: false });
+    return null;
   }
 
-  if (profile.battery === 'yes') {
-    uniquePush(requiredDocuments, 'Battery safety information');
-    uniquePush(requiredDocuments, 'Transport and battery labeling details');
-    uniquePush(regulations, 'Battery regulation and transport review');
-    uniquePush(risks, 'Battery-powered products often carry extra transport, safety, and labeling risk.');
-  } else if (profile.battery === 'not-sure') {
-    uniquePush(missing, 'Clarify whether an internal or removable battery is present.');
+  state.aiAnalysis = result.analysis;
+  if (result.channel === 'browser' && result.model) {
+    setAnalysisStatus(t('results.aiBrowserReady', { model: result.model }), 'success');
+  } else {
+    setAnalysisStatus(t('results.aiReady'), 'success');
   }
-
-  if (profile.wireless === 'yes') {
-    uniquePush(requiredDocuments, 'Wireless / radio test evidence');
-    uniquePush(regulations, 'Radio equipment / wireless functionality review');
-    uniquePush(risks, 'Wireless features may trigger additional testing or supplier evidence needs.');
-  } else if (profile.wireless === 'not-sure') {
-    uniquePush(missing, 'Confirm whether the product uses Bluetooth, Wi-Fi, RF, or similar wireless features.');
-  }
-
-  if (profile.skinContact === 'yes') {
-    uniquePush(requiredDocuments, 'Material and contact-safety information');
-    uniquePush(regulations, 'Material safety / contact-risk review');
-    uniquePush(nextSteps, 'Check which materials contact the body and whether supplier evidence covers those materials.');
-  } else if (profile.skinContact === 'not-sure') {
-    uniquePush(missing, 'Clarify whether the product is worn, attached to skin, or used directly on the body.');
-  }
-
-  if (profile.children === 'yes') {
-    uniquePush(requiredDocuments, 'Child-safety warnings and age guidance');
-    uniquePush(regulations, 'Children product safety review');
-    uniquePush(risks, 'Products intended for children usually require a tighter safety and warning review.');
-  } else if (profile.children === 'not-sure') {
-    uniquePush(missing, 'Clarify whether children are a target user group or likely user group.');
-  }
-
-  switch (profile.productCategory) {
-    case 'consumer-electronics':
-      uniquePush(regulations, 'General consumer electronics conformity review');
-      break;
-    case 'lighting':
-      uniquePush(regulations, 'Lighting product conformity review');
-      break;
-    case 'chargers-batteries':
-      uniquePush(regulations, 'Charger and battery accessory review');
-      uniquePush(risks, 'Chargers and battery accessories are often requested by marketplaces for extra proof.');
-      break;
-    case 'home-kitchen-electrical':
-      uniquePush(regulations, 'Home and kitchen electrical use-case review');
-      break;
-    case 'fitness-gadgets':
-      uniquePush(regulations, 'Wearable or fitness-device review');
-      break;
-    case 'beauty-devices':
-      uniquePush(regulations, 'Beauty device safety and contact review');
-      break;
-    case 'children-tech':
-      uniquePush(regulations, 'Child-oriented technical product review');
-      uniquePush(risks, 'Child-focused positioning increases sensitivity around warnings, intended use, and supporting evidence.');
-      break;
-    case 'general-non-electrical':
-      uniquePush(regulations, 'General product safety review');
-      break;
-    default:
-      break;
-  }
-
-  if (profile.salesChannel === 'amazon') {
-    uniquePush(nextSteps, 'Prepare the file pack in a format that can answer Amazon compliance document requests quickly.');
-  }
-  if (profile.salesChannel === 'multi') {
-    uniquePush(risks, 'Multiple channels usually mean multiple listing standards and stricter document consistency needs.');
-  }
-
-  if (profile.sellerRole === 'reseller' || profile.sellerRole === 'importer') {
-    uniquePush(requiredDocuments, 'Supplier compliance pack');
-    uniquePush(missing, 'Confirm which core documents must come from the supplier and which must be prepared on your side.');
-    uniquePush(risks, 'Reseller and importer models often fail because supplier evidence is incomplete or product-specific proof is weak.');
-  }
-  if (profile.sellerRole === 'not-sure') {
-    uniquePush(missing, 'Clarify whether you act as manufacturer, importer, or reseller in the target market.');
-  }
-
-  if (profile.ceStatus === 'no') {
-    uniquePush(risks, 'No CE or supplier pack is currently visible, which is a major signal for listing and market-entry risk.');
-    uniquePush(nextSteps, 'Request the supplier evidence pack before spending time on final listing preparation.');
-  }
-  if (profile.ceStatus === 'not-sure') {
-    uniquePush(missing, 'Clarify whether any CE, DoC, or supplier evidence already exists.');
-  }
-
-  if (!profile.documents.includes('test-report')) {
-    uniquePush(missing, 'Test reports are not marked as available.');
-  }
-  if (!profile.documents.includes('doc')) {
-    uniquePush(missing, 'Declaration of Conformity is not marked as available.');
-  }
-  if (!profile.documents.includes('manual')) {
-    uniquePush(missing, 'User manual or instruction set is not marked as available.');
-  }
-  if (!profile.documents.includes('label-pack')) {
-    uniquePush(missing, 'Label or marking pack is not marked as available.');
-  }
-  if ((profile.sellerRole === 'reseller' || profile.sellerRole === 'importer') && !profile.documents.includes('supplier-pack')) {
-    uniquePush(missing, 'Supplier compliance pack is not marked as available.');
-  }
-
-  if (!profile.markets.length) {
-    uniquePush(missing, 'Choose at least one target market.');
-  }
-
-  uniquePush(nextSteps, 'Turn the likely document list into a supplier follow-up checklist and close the missing items one by one.');
-  uniquePush(nextSteps, 'If the product is strategically important, move from the check into a starter pack before launch.');
-
-  return { requiredDocuments, regulations, missing, risks, nextSteps };
-}
-
-function buildResultCard(title, items, tone = 'neutral') {
-  const toneClasses = {
-    neutral: 'border-slate-200 bg-white',
-    warning: 'border-amber-200 bg-amber-50/60'
-  };
-  const listHtml = items.length
-    ? items.map((item) => `<li class="rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700">${item}</li>`).join('')
-    : `<li class="rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-500">${t('common.none')}</li>`;
-
-  return `
-    <article class="rounded-[1.75rem] border p-6 shadow-sm ${toneClasses[tone] || toneClasses.neutral}">
-      <div class="text-lg font-bold text-slate-900">${title}</div>
-      <ul class="mt-5 space-y-3">${listHtml}</ul>
-    </article>
-  `;
+  renderResults(profile, { emitResultViewAnalytics: false });
+  return result.analysis;
 }
 
 function renderStats() {
@@ -736,31 +853,113 @@ function renderPlaybooks() {
 }
 
 function renderPackages() {
-  elements.packageGrid.innerHTML = state.data.packages.map((item) => `
-    <article class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm">
-      <div class="flex items-center justify-between gap-4">
-        <div class="text-xl font-black tracking-tight text-slate-950">${localize(item.name)}</div>
-        <div class="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-brand-700">${item.price}</div>
+  elements.packageGrid.innerHTML = state.data.packages.map((item) => {
+    const highlight = Boolean(item.highlight);
+    const articleClass = highlight
+      ? 'relative rounded-[1.75rem] border-2 border-brand-500 bg-white p-6 pt-8 shadow-panel ring-4 ring-brand-500/15'
+      : 'rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm';
+    const tierLabel = item.tierKey ? t(`packages.tierLabels.${item.tierKey}`) : '';
+    const ctaTarget = item.ctaTarget === 'assessment' ? 'assessment' : 'contact';
+    const ctaHref = `#${ctaTarget}`;
+    const interestAttr = item.packageInterest
+      ? ` data-package-interest="${escapeHtml(item.packageInterest)}"`
+      : '';
+    const tierKeyEsc = escapeHtml(item.tierKey || '');
+    const ctaTargetEsc = escapeHtml(item.ctaTarget || '');
+    const packageInterestEsc = escapeHtml(item.packageInterest || '');
+    const packageCtaAttrs = ` data-package-cta="${tierKeyEsc}" data-package-cta-target="${ctaTargetEsc}" data-package-cta-interest="${packageInterestEsc}"`;
+    const ctaLabel = item.ctaKey ? t(`packages.cta.${item.ctaKey}`) : t('packages.cta.default');
+    const ctaClass = item.ctaTarget === 'assessment'
+      ? 'mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-brand-700 bg-white px-5 py-3 text-sm font-semibold text-brand-700 hover:bg-sky-50'
+      : 'mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-700 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-900';
+    const priceDetail = item.priceDetail ? `<p class="mt-1 text-xs leading-5 text-slate-500">${escapeHtml(localize(item.priceDetail))}</p>` : '';
+    const trustLine = item.trustLine ? `<p class="mt-4 border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">${escapeHtml(localize(item.trustLine))}</p>` : '';
+    const badge = highlight
+      ? `<div class="absolute -top-3 left-1/2 z-[1] -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-700 px-4 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-white shadow-sm">${escapeHtml(t('packages.badgeRecommended'))}</div>`
+      : '';
+
+    return `
+    <article class="${articleClass}">
+      ${badge}
+      ${tierLabel ? `<p class="text-[10px] font-black uppercase tracking-[0.24em] text-brand-700">${escapeHtml(tierLabel)}</p>` : ''}
+      <div class="mt-1 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <h3 class="text-xl font-black tracking-tight text-slate-950">${localize(item.name)}</h3>
+        <div class="shrink-0 text-right sm:pl-4">
+          <div class="text-lg font-black text-brand-700">${escapeHtml(item.price)}</div>
+          ${priceDetail}
+        </div>
       </div>
       <p class="mt-4 text-sm leading-6 text-slate-600">${localize(item.summary)}</p>
-      <div class="mt-5 space-y-3">
+      <div class="mt-5 space-y-2.5">
         ${item.deliverables.map((deliverable) => `
-          <div class="rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-700">${localize(deliverable)}</div>
+          <div class="flex gap-3 rounded-2xl bg-slate-50 px-4 py-3">
+            <i class="fa-solid fa-check mt-0.5 shrink-0 text-emerald-600" aria-hidden="true"></i>
+            <span class="text-sm leading-6 text-slate-700">${localize(deliverable)}</span>
+          </div>
         `).join('')}
       </div>
-      <a href="#contact" class="mt-6 inline-flex items-center justify-center rounded-full bg-brand-700 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-900">${t('packages.cta')}</a>
+      ${trustLine}
+      <a href="${ctaHref}" data-section-link="${ctaTarget}" class="${ctaClass}"${interestAttr}${packageCtaAttrs}>
+        ${item.ctaTarget === 'assessment' ? '<i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>' : '<i class="fa-solid fa-comments" aria-hidden="true"></i>'}
+        <span>${escapeHtml(ctaLabel)}</span>
+      </a>
+      <a href="#contact" data-section-link="contact" data-package-interest="cardExpert" class="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-center text-xs font-semibold text-brand-700 transition hover:border-brand-500 hover:bg-white">
+        <i class="fa-solid fa-user-tie" aria-hidden="true"></i>
+        <span>${escapeHtml(t('packages.cardExpertLink'))}</span>
+      </a>
     </article>
-  `).join('');
+  `;
+  }).join('');
+}
+
+function applyContactPrefillFromPackageInterest() {
+  const interest = sessionStorage.getItem('certpath-package-interest');
+  if (!interest || !elements.contactMessage) {
+    return;
+  }
+  const template = t(`packages.contactPrefill.${interest}`);
+  if (!template || template.startsWith('packages.')) {
+    sessionStorage.removeItem('certpath-package-interest');
+    return;
+  }
+  if (!elements.contactMessage.value.trim()) {
+    elements.contactMessage.value = template;
+  }
+  sessionStorage.removeItem('certpath-package-interest');
 }
 
 function renderResources() {
-  elements.resourceGrid.innerHTML = state.data.resources.map((item) => `
-    <article class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm">
-      <span class="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-brand-700">${localize(item.type)}</span>
-      <h3 class="mt-4 text-xl font-black tracking-tight text-slate-950">${localize(item.title)}</h3>
-      <p class="mt-3 text-sm leading-6 text-slate-600">${localize(item.description)}</p>
+  elements.resourceGrid.innerHTML = state.data.resources.map((item) => {
+    const slug = typeof item.slug === 'string' ? item.slug.trim() : '';
+    const detailHref = slug ? `./resources/${slug}.html` : '#resources';
+    const categoryLabel = item.categoryKey
+      ? t(`resources.categories.${item.categoryKey}`)
+      : localize(item.type);
+    const typeLabel = localize(item.type);
+    const badgeText = item.categoryKey ? `${escapeHtml(categoryLabel)} · ${escapeHtml(typeLabel)}` : escapeHtml(typeLabel);
+    return `
+    <article class="flex h-full flex-col rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:border-sky-200 hover:shadow-md">
+      <span class="inline-flex w-fit rounded-full bg-sky-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-brand-700">${badgeText}</span>
+      <h3 class="mt-4 text-lg font-black leading-snug tracking-tight text-slate-950">
+        <a href="${escapeHtml(detailHref)}" class="hover:text-brand-700">${localize(item.title)}</a>
+      </h3>
+      <p class="mt-3 flex-1 text-sm leading-6 text-slate-600">${localize(item.description)}</p>
+      <div class="mt-6 flex flex-col gap-2 border-t border-slate-100 pt-5 sm:flex-row sm:flex-wrap">
+        <a href="${escapeHtml(detailHref)}" class="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-brand-700 px-4 py-2.5 text-center text-xs font-semibold text-white hover:bg-brand-900 sm:flex-none sm:px-5">
+          <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+          ${escapeHtml(t('resources.ctaRead'))}
+        </a>
+        <a href="#assessment" data-section-link="assessment" class="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-center text-xs font-semibold text-slate-700 hover:border-brand-500 hover:text-brand-800 sm:flex-none sm:px-5">
+          <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+          ${escapeHtml(t('resources.ctaRunCheck'))}
+        </a>
+        <a href="#packages" data-section-link="packages" class="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-transparent px-4 py-2 text-center text-xs font-semibold text-brand-700 hover:underline sm:flex-none">
+          ${escapeHtml(t('resources.ctaPackages'))}
+        </a>
+      </div>
     </article>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function renderFaq() {
@@ -775,74 +974,321 @@ function renderFaq() {
   `).join('');
 }
 
-function renderResults(profile) {
+function getReportRenderer() {
+  return window.CertPathReport || null;
+}
+
+function getReportDeps() {
+  return {
+    t,
+    localize,
+    locale: state.locale,
+    packages: state.data?.packages ?? []
+  };
+}
+
+function buildComplianceReportInnerHtml(ctx) {
+  const R = getReportRenderer();
+  if (!R) {
+    return `<p class="text-sm text-rose-800">${escapeHtml(t('results.report.rendererMissing'))}</p>`;
+  }
+  return R.buildComplianceReportInnerHtml(ctx, getReportDeps());
+}
+
+function buildPlainReportLines(ctx) {
+  const R = getReportRenderer();
+  if (!R) {
+    return '';
+  }
+  return R.buildPlainReportLines(ctx, getReportDeps());
+}
+
+function setReportToolbarVisible(visible) {
+  if (elements.reportToolbar) {
+    elements.reportToolbar.classList.toggle('hidden', !visible);
+  }
+  if (elements.expertHandoffBanner) {
+    elements.expertHandoffBanner.classList.toggle('hidden', !visible);
+  }
+}
+
+function handleReportPdfClick() {
+  if (!state.reportContext) {
+    return;
+  }
+  const R = getReportRenderer();
+  if (!R?.buildPdfExportDocumentHtml) {
+    return;
+  }
+  const html = R.buildPdfExportDocumentHtml(state.reportContext, getReportDeps());
+  const printWindow = window.open('', '_blank', 'noopener,noreferrer,width=900,height=1200');
+  if (!printWindow) {
+    return;
+  }
+  printWindow.document.open();
+  printWindow.document.write(html);
+  printWindow.document.close();
+  printWindow.addEventListener('load', () => {
+    window.setTimeout(() => {
+      printWindow.focus();
+      printWindow.print();
+    }, 600);
+  });
+  trackProduct(window.CertPathAnalytics?.EVENTS?.PDF_DOWNLOADED || 'pdf_downloaded', { surface: 'spa' });
+}
+
+function showReportToast(message) {
+  if (!elements.reportToast) {
+    return;
+  }
+  elements.reportToast.textContent = message;
+  elements.reportToast.classList.remove('hidden', 'opacity-0');
+  window.clearTimeout(showReportToast._tid);
+  showReportToast._tid = window.setTimeout(() => {
+    elements.reportToast.classList.add('opacity-0');
+    window.setTimeout(() => elements.reportToast.classList.add('hidden'), 300);
+  }, 3200);
+}
+
+function openEmailReportModal() {
+  if (!state.reportContext || !elements.emailReportModal) {
+    return;
+  }
+  elements.emailReportModal.classList.remove('hidden');
+  elements.emailReportModal.classList.add('flex');
+}
+
+function closeEmailReportModal() {
+  if (!elements.emailReportModal) {
+    return;
+  }
+  elements.emailReportModal.classList.add('hidden');
+  elements.emailReportModal.classList.remove('flex');
+}
+
+function buildMailtoForReport(recipientOverride) {
+  const support = state.data?.meta?.supportEmail || 'hello@certpath.com';
+  const body = buildPlainReportLines(state.reportContext);
+  const subject = t('results.report.emailSubject', { product: state.reportContext.profile.productName || 'Product' });
+  const to = (recipientOverride || '').trim() || support;
+  return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function handleReportEmailClick() {
+  if (!state.reportContext) {
+    return;
+  }
+  openEmailReportModal();
+}
+
+function handleEmailModalCopy() {
+  if (!state.reportContext) {
+    return;
+  }
+  const text = buildPlainReportLines(state.reportContext);
+  navigator.clipboard.writeText(text).then(() => {
+    showReportToast(t('results.report.emailCopied'));
+  }).catch(() => {
+    window.prompt(t('results.report.emailCopyManual'), text);
+  });
+}
+
+function handleEmailModalMailto() {
+  if (!state.reportContext) {
+    return;
+  }
+  const to = elements.emailReportRecipient?.value?.trim() || '';
+  const href = buildMailtoForReport(to);
+  const a = document.createElement('a');
+  a.href = href;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  closeEmailReportModal();
+}
+
+function handleSaveReportClick() {
+  const P = window.CertPathReportPersistence;
+  if (!state.reportContext || !P) {
+    return;
+  }
+  const record = P.saveToHistory({
+    ...state.reportContext,
+    locale: state.locale,
+    createdAt: new Date().toISOString()
+  });
+  showReportToast(t('results.report.savedToast', { title: record.profile.productName || t('results.reportTitle') }));
+  renderReportHistoryPanel();
+}
+
+async function handleShareReportClick() {
+  const P = window.CertPathReportPersistence;
+  if (!state.reportContext || !P) {
+    return;
+  }
+  const encoded = await P.encodeSharePayload({
+    locale: state.locale,
+    profile: state.reportContext.profile,
+    aiAnalysis: state.reportContext.aiAnalysis
+  });
+  if (encoded.tooLong) {
+    window.alert(t('results.report.shareTooLong'));
+    return;
+  }
+  const url = new URL('report-view.html', window.location.href);
+  url.hash = `p=${encoded.format}.${encoded.data}`;
+  const urlStr = url.toString();
+  try {
+    await navigator.clipboard.writeText(urlStr);
+    showReportToast(t('results.report.shareCopied'));
+  } catch {
+    window.prompt(t('results.report.shareManual'), urlStr);
+  }
+}
+
+function renderReportHistoryPanel() {
+  const P = window.CertPathReportPersistence;
+  if (!elements.reportHistoryPanel || !elements.reportHistoryList || !P) {
+    return;
+  }
+  const items = P.listHistory();
+  if (!items.length) {
+    elements.reportHistoryPanel.classList.add('hidden');
+    elements.reportHistoryList.innerHTML = '';
+    return;
+  }
+  elements.reportHistoryPanel.classList.remove('hidden');
+  elements.reportHistoryList.innerHTML = items.map((item) => {
+    const fullUrl = new URL(`report-view.html?id=${encodeURIComponent(item.id)}`, window.location.href).toString();
+    const title = escapeHtml(item.profile?.productName || t('results.reportTitle'));
+    const when = escapeHtml(new Date(item.createdAt).toLocaleString(state.locale, { dateStyle: 'short', timeStyle: 'short' }));
+    return `
+      <li class="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0">
+        <div>
+          <div class="font-semibold text-slate-900">${title}</div>
+          <div class="text-xs text-slate-500">${when}</div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a href="${escapeHtml(fullUrl)}" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-brand-700 hover:border-brand-500">${t('results.report.historyOpen')}</a>
+          <button type="button" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 hover:border-rose-200 hover:text-rose-700" data-history-delete="${escapeHtml(item.id)}">${t('results.report.historyDelete')}</button>
+        </div>
+      </li>`;
+  }).join('');
+}
+
+function handleReportExpertClick() {
+  if (state.reportContext?.profile) {
+    sessionStorage.setItem(SESSION_CONTACT_FROM_REPORT, '1');
+  }
+  activateSection('contact', { updateHash: true, scroll: true });
+}
+
+function handleReportEditClick() {
+  state.wizardStep = 1;
+  hideWizardValidation();
+  renderWizardChrome();
+  activateSection('assessment', { updateHash: true, scroll: true });
+  scrollWizardToTop();
+}
+
+function bindReportToolbar() {
+  if (reportToolbarBound) {
+    return;
+  }
+  reportToolbarBound = true;
+  elements.reportBtnPdf?.addEventListener('click', handleReportPdfClick);
+  elements.reportBtnEmail?.addEventListener('click', handleReportEmailClick);
+  elements.reportBtnSave?.addEventListener('click', handleSaveReportClick);
+  elements.reportBtnShare?.addEventListener('click', () => {
+    handleShareReportClick();
+  });
+  elements.reportBtnExpert?.addEventListener('click', handleReportExpertClick);
+  elements.reportBtnExpertBanner?.addEventListener('click', handleReportExpertClick);
+  elements.reportBtnEdit?.addEventListener('click', handleReportEditClick);
+  elements.emailModalClose?.addEventListener('click', closeEmailReportModal);
+  elements.emailModalCopy?.addEventListener('click', handleEmailModalCopy);
+  elements.emailModalMailto?.addEventListener('click', handleEmailModalMailto);
+  elements.emailReportModal?.addEventListener('click', (event) => {
+    if (event.target === elements.emailReportModal) {
+      closeEmailReportModal();
+    }
+  });
+  elements.reportHistoryList?.addEventListener('click', (event) => {
+    const btn = event.target.closest('[data-history-delete]');
+    if (!btn || !window.CertPathReportPersistence) {
+      return;
+    }
+    window.CertPathReportPersistence.deleteHistoryById(btn.getAttribute('data-history-delete'));
+    renderReportHistoryPanel();
+  });
+}
+
+function renderResults(profile, options = {}) {
+  const { emitResultViewAnalytics = true } = options;
   const isReady = isProfileReady(profile);
 
-  if (!isReady) {
-    if (!state.aiAnalysis) {
-      setAnalysisStatus();
-    }
-    elements.summaryGrid.innerHTML = createEmptyState();
-    elements.resultGrid.innerHTML = '';
-    elements.nextActions.innerHTML = '';
+  if (!elements.complianceReportBody) {
     return;
   }
 
-  const fallbackAnalysis = buildAnalysis(profile);
+  if (!isReady) {
+    if (!state.aiAnalysis && !options.preserveAnalysisStatus) {
+      setAnalysisStatus();
+    }
+    setReportToolbarVisible(false);
+    state.reportContext = null;
+    elements.complianceReportBody.innerHTML = createEmptyState();
+    return;
+  }
+
+  const engine = runDeterministicEngine(profile);
   const aiAnalysis = state.aiAnalysis;
-  const analysis = aiAnalysis || fallbackAnalysis;
   const channelLabel = getFilterLabel('channels', profile.salesChannel);
   const categoryLabel = getFilterLabel('categories', profile.productCategory);
   const roleLabel = getFilterLabel('sellerRoles', profile.sellerRole);
   const ceLabel = getFilterLabel('ceStatuses', profile.ceStatus);
   const marketLabel = profile.markets.map((item) => getFilterLabel('markets', item)).join(', ');
 
-  const summaryCards = [
-    createSummaryCard(t('results.summaryOne'), profile.productName, `${categoryLabel} | ${channelLabel} | ${marketLabel}`),
-    createSummaryCard(t('results.summaryTwo'), roleLabel, ceLabel),
-    createSummaryCard(t('results.summaryThree'), getDocumentCountText(profile), profile.productUrl || t('common.none'))
-  ];
-
-  if (aiAnalysis?.summary) {
-    summaryCards.push(
-      createSummaryCard(
-        t('results.summaryAi'),
-        aiAnalysis.summary,
-        aiAnalysis.sourcesUsed.length ? t('results.sourcesTitle') : t('results.nextTitle')
-      )
-    );
+  if (!engine) {
+    setReportToolbarVisible(false);
+    state.reportContext = null;
+    elements.complianceReportBody.innerHTML = `
+      <div class="rounded-[1.5rem] border border-rose-200 bg-rose-50 p-6 shadow-sm">
+        <div class="text-lg font-bold text-rose-900">${t('results.engineMissing')}</div>
+        <p class="mt-2 text-sm text-rose-800">${t('results.engineMissingDetail')}</p>
+      </div>
+    `;
+    return;
   }
 
-  elements.summaryGrid.innerHTML = summaryCards.join('');
+  state.reportContext = {
+    profile,
+    engine,
+    aiAnalysis,
+    channelLabel,
+    categoryLabel,
+    roleLabel,
+    ceLabel,
+    marketLabel,
+    packages: state.data?.packages ?? [],
+    locale: state.locale,
+    generatedAt: new Date().toISOString()
+  };
 
-  const resultCards = [
-    buildResultCard(t('results.documentsTitle'), analysis.requiredDocuments),
-    buildResultCard(t('results.regulationsTitle'), analysis.regulations),
-    buildResultCard(t('results.missingTitle'), analysis.missing),
-    buildResultCard(t('results.risksTitle'), analysis.risks, 'warning')
-  ];
-
-  if (aiAnalysis?.sourcesUsed?.length) {
-    resultCards.push(
-      buildResultCard(
-        t('results.sourcesTitle'),
-        aiAnalysis.sourcesUsed.map((source) => source.url
-          ? '<a class="font-semibold text-brand-700 underline decoration-sky-300 underline-offset-4" href="' + source.url + '" target="_blank" rel="noreferrer">' + source.title + '</a>'
-          : source.title)
-      )
-    );
+  elements.complianceReportBody.innerHTML = buildComplianceReportInnerHtml(state.reportContext);
+  setReportToolbarVisible(true);
+  renderReportHistoryPanel();
+  if (emitResultViewAnalytics) {
+    trackProduct(window.CertPathAnalytics?.EVENTS?.RESULT_VIEWED || 'result_viewed', {
+      surface: 'spa',
+      product_category: profile.productCategory || undefined,
+      sales_channel: profile.salesChannel || undefined,
+      rule_engine_version: engine.engineVersion || undefined,
+      risk_level: engine.riskLevel || undefined
+    });
   }
-
-  elements.resultGrid.innerHTML = resultCards.join('');
-
-  const packagePath = analysis.supportPath?.length
-    ? analysis.supportPath
-    : state.data.packages.map((item) => `${localize(item.name)} | ${item.price}`);
-
-  elements.nextActions.innerHTML = [
-    buildResultCard(t('results.nextTitle'), analysis.nextSteps),
-    buildResultCard(t('results.packagesTitle'), packagePath)
-  ].join('');
 }
 
 function restoreProfile(profile) {
@@ -860,6 +1306,24 @@ function restoreProfile(profile) {
   renderBinaryOptions(elements.childrenContainer, 'children', state.data.filters.binaryOptions, profile?.children || '');
   renderCheckboxOptions(elements.marketsContainer, state.data.filters.markets, profile?.markets || []);
   renderCheckboxOptions(elements.documentsContainer, state.data.filters.documents, profile?.documents || []);
+
+  if (elements.electricalPowerContainer && state.data.filters.electricalPowerSource) {
+    renderBinaryOptions(elements.electricalPowerContainer, 'electrical-power', state.data.filters.electricalPowerSource, profile?.electricalPowerSource || '');
+  }
+  if (elements.batteryRemovableContainer && state.data.filters.batteryRemovable) {
+    renderBinaryOptions(elements.batteryRemovableContainer, 'battery-removable', state.data.filters.batteryRemovable, profile?.batteryRemovable || '');
+  }
+  if (elements.batteryChemistryContainer && state.data.filters.batteryChemistry) {
+    renderBinaryOptions(elements.batteryChemistryContainer, 'battery-chemistry', state.data.filters.batteryChemistry, profile?.batteryChemistry || '');
+  }
+  if (elements.wirelessTechContainer && state.data.filters.wirelessTech) {
+    renderBinaryOptions(elements.wirelessTechContainer, 'wireless-tech', state.data.filters.wirelessTech, profile?.wirelessTech || '');
+  }
+  if (elements.childAgeContainer && state.data.filters.childAgeFocus) {
+    renderBinaryOptions(elements.childAgeContainer, 'child-age', state.data.filters.childAgeFocus, profile?.childAgeFocus || '');
+  }
+
+  syncWizardBranchPanels();
 }
 
 function renderForm(profile) {
@@ -868,11 +1332,17 @@ function renderForm(profile) {
   populateSelect(elements.sellerRole, t('assessment.fields.role'), state.data.filters.sellerRoles);
   populateSelect(elements.ceStatus, t('assessment.fields.ceStatus'), state.data.filters.ceStatuses);
   restoreProfile(profile);
+  renderWizardChrome();
+  if (state.wizardStep === 5) {
+    renderWizardReview();
+  }
 }
 
 function renderApp(profile) {
+  setAppMetaForAnalytics();
   applyStaticTranslations();
   renderLanguageSwitchers();
+  configureAiDemoUiVisibility();
   renderApiKeyStatus();
   renderStats();
   renderPlaybooks();
@@ -880,14 +1350,22 @@ function renderApp(profile) {
   renderResources();
   renderFaq();
   renderForm(profile);
+  renderContactSupportFields();
 
   elements.footerDisclaimer.textContent = localize(state.data.meta.disclaimer);
   elements.footerMeta.textContent = t('footer.meta', {
     date: state.data.meta.lastGlobalUpdate,
     email: state.data.meta.supportEmail
   });
+  if (elements.footerSupport && state.data?.meta?.supportEmail) {
+    const em = state.data.meta.supportEmail;
+    elements.footerSupport.innerHTML = `${escapeHtml(t('footer.supportIntro'))} <a class="font-semibold text-brand-700 underline-offset-2 hover:underline" href="mailto:${escapeHtml(em)}">${escapeHtml(em)}</a> <span class="text-slate-500">${escapeHtml(t('footer.supportNote'))}</span>`;
+  } else if (elements.footerSupport) {
+    elements.footerSupport.textContent = '';
+  }
 
   renderResults(getProfile());
+  renderReportHistoryPanel();
   renderSectionVisibility(state.activeSection);
 }
 
@@ -919,6 +1397,9 @@ function renderSectionVisibility(sectionId) {
   });
 
   getSectionLinks().forEach((link) => {
+    if (link.closest('#package-grid')) {
+      return;
+    }
     const isActive = link.dataset.sectionLink === sectionId;
     if (link.classList.contains('text-white') || link.dataset.sectionLink === 'home') {
       return;
@@ -929,9 +1410,13 @@ function renderSectionVisibility(sectionId) {
 }
 
 function activateSection(sectionId, options = {}) {
-  const { updateHash = true, scroll = true } = options;
+  const { updateHash = true, scroll = true, navigationSource = 'app' } = options;
   state.activeSection = sectionId;
   renderSectionVisibility(sectionId);
+
+  if (sectionId === 'assessment' && (navigationSource === 'spa_link' || navigationSource === 'hash')) {
+    markAssessmentStartedOnce(navigationSource === 'hash' ? 'hash' : 'nav');
+  }
 
   if (updateHash) {
     history.replaceState(null, '', sectionId ? `#${sectionId}` : '#hero');
@@ -953,6 +1438,10 @@ function activateSection(sectionId, options = {}) {
   if (scroll) {
     panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+
+  if (sectionId === 'contact') {
+    applyContactPrefills();
+  }
 }
 
 function resolveInitialSection() {
@@ -967,20 +1456,28 @@ function resolveInitialSection() {
 }
 
 function bindSectionLinks() {
-  getSectionLinks().forEach((link) => {
-    link.addEventListener('click', (event) => {
-      const sectionId = link.dataset.sectionLink;
-      if (sectionId === 'home') {
-        event.preventDefault();
-        activateSection('', { updateHash: true, scroll: true });
-        return;
-      }
-      if (!sectionId || !document.querySelector(`[data-section-panel="${sectionId}"]`)) {
-        return;
-      }
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('[data-section-link]');
+    if (!link) {
+      return;
+    }
+    const sectionId = link.dataset.sectionLink;
+    if (sectionId === 'home') {
       event.preventDefault();
-      activateSection(sectionId);
-    });
+      activateSection('', { updateHash: true, scroll: true });
+      return;
+    }
+    if (!sectionId || !document.querySelector(`[data-section-panel="${sectionId}"]`)) {
+      return;
+    }
+    event.preventDefault();
+    if (link.dataset.certpathEvent) {
+      trackProduct(link.dataset.certpathEvent, {
+        cta_label: link.dataset.certpathEventLabel || undefined,
+        target_section: sectionId
+      });
+    }
+    activateSection(sectionId, { navigationSource: 'spa_link' });
   });
 }
 
@@ -998,24 +1495,55 @@ function resetForm() {
     skinContact: '',
     children: '',
     markets: [],
-    documents: []
+    documents: [],
+    electricalPowerSource: '',
+    batteryRemovable: '',
+    batteryChemistry: '',
+    wirelessTech: '',
+    childAgeFocus: ''
   };
   state.aiAnalysis = null;
+  state.wizardStep = 1;
   localStorage.removeItem(STORAGE_KEY);
+  hideWizardValidation();
   restoreProfile(emptyProfile);
   setSavedStatus('cleared');
   setAnalysisStatus();
+  renderWizardChrome();
   renderResults(getProfile());
 }
 
 function handleContactSubmit(event) {
   event.preventDefault();
   const name = document.getElementById('contact-name').value || t('contact.demoVisitor');
-  alert(t('contact.alert', { name }));
+  const categoryVal = elements.contactProductCategory?.value;
+  const roleVal = elements.contactSellerRole?.value;
+  const docGapVal = elements.contactDocGap?.value;
+  const urgencyVal = elements.contactUrgency?.value;
+  const markets = getContactMarketSelection();
+  const detailLines = [
+    categoryVal ? `${t('contact.form.productCategory')}: ${getFilterLabel('categories', categoryVal)}` : '',
+    roleVal ? `${t('contact.form.sellerRole')}: ${getFilterLabel('sellerRoles', roleVal)}` : '',
+    docGapVal ? `${t('contact.form.docGap')}: ${t(`contact.docGaps.${docGapVal}`)}` : '',
+    urgencyVal ? `${t('contact.form.urgency')}: ${t(`contact.urgency.${urgencyVal}`)}` : '',
+    markets.length ? `${t('contact.form.markets')}: ${markets.map((m) => getFilterLabel('markets', m)).join(', ')}` : ''
+  ].filter(Boolean);
+  const suffix = detailLines.length ? `\n\n${detailLines.join('\n')}` : '';
+  trackProduct(window.CertPathAnalytics?.EVENTS?.SUPPORT_REQUESTED || 'support_requested', {
+    has_structured: Boolean(categoryVal || roleVal || docGapVal || urgencyVal),
+    markets_selected: markets.length,
+    urgency_set: Boolean(urgencyVal),
+    doc_gap_set: Boolean(docGapVal)
+  });
+  alert(`${t('contact.alert', { name })}${suffix}`);
   elements.contactForm.reset();
 }
 
 function handleSaveApiKey() {
+  if (window.CertPathAiEnvironment && !window.CertPathAiEnvironment.isBrowserGeminiDemoEnabled()) {
+    setAnalysisStatus(t('results.aiProductionBrowserBlocked'), 'warning');
+    return;
+  }
   const apiKey = elements.geminiApiKey?.value?.trim() || '';
   if (!apiKey) {
     clearBrowserApiKey();
@@ -1047,6 +1575,7 @@ async function init() {
     renderLanguageSwitchers();
     const savedProfile = readProfile();
     renderApp(savedProfile);
+    bindReportToolbar();
     setSavedStatus(savedProfile ? 'loaded' : 'waiting');
 
     const onLanguageSwitch = (event) => {
@@ -1059,32 +1588,93 @@ async function init() {
     elements.languageSwitcher?.addEventListener('click', onLanguageSwitch);
     elements.mobileLanguageSwitcher?.addEventListener('click', onLanguageSwitch);
     bindSectionLinks();
+    if (state.activeSection === 'assessment') {
+      markAssessmentStartedOnce('hash');
+    }
+    if (state.activeSection === 'contact') {
+      applyContactPrefills();
+    }
     window.addEventListener('hashchange', () => {
       const sectionId = resolveInitialSection();
-      activateSection(sectionId, { updateHash: false, scroll: false });
+      activateSection(sectionId, { updateHash: false, scroll: false, navigationSource: 'hash' });
     });
 
     elements.findButton.addEventListener('click', async () => {
       const profile = getProfile();
       state.aiAnalysis = null;
       saveProfile(profile);
-      renderResults(profile);
       activateSection('assessment', { updateHash: true, scroll: false });
-      if (isProfileReady(profile)) {
-        await fetchAiAnalysis(profile);
+      if (state.wizardStep !== WIZARD_STEP_COUNT) {
+        hideWizardValidation();
+        if (elements.wizardValidationBanner) {
+          elements.wizardValidationBanner.textContent = t('wizard.validation.finishStepsFirst');
+          elements.wizardValidationBanner.classList.remove('hidden');
+        }
+        scrollWizardToTop();
+        return;
       }
+      if (!isProfileReady(profile)) {
+        setAnalysisStatus(t('results.validationIncomplete'), 'warning');
+        renderResults(profile, { preserveAnalysisStatus: true });
+        return;
+      }
+      hideWizardValidation();
+      setAnalysisStatus();
+      renderResults(profile);
+      trackProduct(window.CertPathAnalytics?.EVENTS?.ASSESSMENT_COMPLETED || 'assessment_completed', {
+        product_category: profile.productCategory || undefined,
+        sales_channel: profile.salesChannel || undefined,
+        wizard_step_count: WIZARD_STEP_COUNT
+      });
+      await fetchAiAnalysis(profile);
+      elements.complianceReportBody?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    elements.wizardBackButton?.addEventListener('click', handleWizardBack);
+    elements.wizardNextButton?.addEventListener('click', handleWizardNext);
+    elements.assessmentForm?.addEventListener('change', () => {
+      syncWizardBranchPanels();
+      saveProfile(getProfile());
+      if (state.wizardStep === 5) {
+        renderWizardReview();
+      }
+    });
+    elements.assessmentForm?.addEventListener('input', () => {
+      scheduleProfilePersistFromInput();
     });
     elements.resetButton.addEventListener('click', resetForm);
     elements.saveApiKeyButton?.addEventListener('click', handleSaveApiKey);
     elements.clearApiKeyButton?.addEventListener('click', handleClearApiKey);
     elements.contactForm.addEventListener('submit', handleContactSubmit);
+    document.addEventListener('click', (event) => {
+      const interestLink = event.target.closest('a[data-package-interest]');
+      if (interestLink?.dataset.packageInterest) {
+        sessionStorage.setItem('certpath-package-interest', interestLink.dataset.packageInterest);
+        trackProduct(window.CertPathAnalytics?.EVENTS?.PACKAGE_CTA_CLICKED || 'package_cta_clicked', {
+          package_interest: interestLink.dataset.packageInterest,
+          tier_key: interestLink.dataset.packageCta || undefined,
+          cta_surface: interestLink.closest('#package-grid') ? 'package_card_secondary' : 'footer_or_static'
+        });
+      }
+      const tierLink = event.target.closest('a[data-package-cta]');
+      if (tierLink?.dataset.packageCta && tierLink !== interestLink) {
+        trackProduct(window.CertPathAnalytics?.EVENTS?.PACKAGE_CTA_CLICKED || 'package_cta_clicked', {
+          tier_key: tierLink.dataset.packageCta,
+          cta_target: tierLink.dataset.packageCtaTarget || undefined,
+          package_interest: tierLink.dataset.packageCtaInterest || undefined,
+          cta_surface: 'package_card_primary'
+        });
+      }
+    }, true);
   } catch (error) {
     applyStaticTranslations();
-    elements.summaryGrid.innerHTML = `
-      <div class="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm xl:col-span-2">
+    if (elements.complianceReportBody) {
+      elements.complianceReportBody.innerHTML = `
+      <div class="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm">
         <div class="text-lg font-bold text-slate-900">${t('status.error')}</div>
       </div>
     `;
+    }
+    setReportToolbarVisible(false);
     setSavedStatus('error');
   }
 }
